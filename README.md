@@ -1,9 +1,11 @@
 # prerequisites: Semantic UI, ReactJS, MongoDB
 
 # To setup:
- npm install
- cd front-end && npm install
+ - import insert-script.js in back-end folder to mongodb
+ - go to main folder:
+   npm install
+   cd front-end && npm install
 
 # To run:
- go to main folder
- run: npm start
+ - go to main folder:
+   run: npm start
