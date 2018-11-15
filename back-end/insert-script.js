@@ -1,5 +1,5 @@
 use social-media
-db.user.insertMany([
+db.users.insertMany([
   {
     email     : "dacalixto@up.edu.ph",
     name      : "dan anthony",
