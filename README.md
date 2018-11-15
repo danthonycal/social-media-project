@@ -1,4 +1,9 @@
-# CMSC-100-Project"# CMSC-100-Social-Media"  git init git add README.md git commit -m "first commit" git remote add origin https://github.com/danthonycal/CMSC-100-Social-Media.git git push -u origin master
-"# CMSC-100-Social-Media" 
-"# CMSC-100-Social-Media" 
-"# cmsc100-social-media" 
+prerequisites: Semantic UI, ReactJS, MongoDB
+
+# To setup:
+# npm install
+# cd front-end && npm install
+
+# To run:
+# go to main folder
+# run: npm start
