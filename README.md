@@ -1,4 +1,8 @@
-# prerequisites: Semantic UI, ReactJS, MongoDB
+# prerequisites:
+ - Semantic UI
+ - ReactJS
+ - MongoDB
+ - Yarn
 
 # To setup:
  - import insert-script.js in back-end folder to mongodb
