@@ -1,9 +1,9 @@
-prerequisites: Semantic UI, ReactJS, MongoDB
+# prerequisites: Semantic UI, ReactJS, MongoDB
 
 # To setup:
-# npm install
-# cd front-end && npm install
+ npm install
+ cd front-end && npm install
 
 # To run:
-# go to main folder
-# run: npm start
+ go to main folder
+ run: npm start
