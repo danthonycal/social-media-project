@@ -1,4 +1,4 @@
-use social-media
+// use social-media
 db.users.insertMany([
   {
     email     : "dacalixto@up.edu.ph",
