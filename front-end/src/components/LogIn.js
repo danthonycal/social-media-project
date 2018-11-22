@@ -2,7 +2,6 @@
 import autobind from 'react-autobind';
 import React, { Component } from 'react';
 import { Header, Button, Grid, Form, Segment, Message, Menu } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from './Footer';
@@ -54,22 +53,24 @@ export default class LoginForm extends Component {
     const {email, password} = this.state;
     axios.post("/app/login", {
       email: email, 
-      password: password
+      password: password,
     })
     .then(function (response) {
-      if (response.data.redirect === '/login'){
+      // console.log(response)
+      if (response.status === 404){
           console.log("ok")
           window.location = "/login"
-      } else {
+      } else if (response.status === 200) {
         swal("Success!", "Successfully logged in!", "success", {
           button: "Okay"
-        })
-        console.log("try")
-        window.location = "/home"
+        }).then(function () {
+          console.log("try")
+          window.location = "/home"
+        });
       } 
     })
     .catch(function(error) {
-        // window.location = "/login"
+        window.location = "/login"
         console.log("error")
     })
   }

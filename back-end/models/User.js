@@ -18,29 +18,35 @@ UserSchema.pre('save', function (next) {
 	console.log("pre")
 
 	let user = this;
-  	const salt = bcrypt.genSaltSync(10);
-  	const hash = bcrypt.hashSync(this.password,salt);
 
-	if (!user.isModified('password')) return next();
+	if (!user.isModified('password')) {
+		console.log("bago mag save")
+		return next()
+	};
 
-	bcrypt.genSalt(SALT_WORK_FACTOR, function (err,salt) {
-	  if (err) return next(err);
+	next();
+  	// const salt = bcrypt.genSaltSync(10);
+  	// const hash = bcrypt.hashSync(user.password,salt);
+	// console.log("why")
+	// bcrypt.genSalt(SALT_WORK_FACTOR, function (err,salt) {
+	//   if (err) return next(err);
 
-	  bcrypt.hash(user.password, salt, function (err, hash) {
-	    if (err) return next(err);
+	//   bcrypt.hash(user.password, salt, function (err, hash) {
+	//     if (err) return next(err);
 
-	    user.password = hash;
-	    next();
-	  });
-	});
+	//     user.password = hash;
+	//     console.log(user.password)
+	//     next();
+	//   });
+	// });
 });
 
-UserSchema.methods.comparePassword = function (password, cb) {
-	return bcrypt.compare(password, this.password, function(err, isMatch) {
-		if (err) return cb(err);
-		cb(null, isMatch);
-	});
-}
+UserSchema.methods.comparePassword = function(candidatePassword, hash, cb) {
+    bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
+};
 
 
 module.exports = mongoose.model('User', UserSchema);

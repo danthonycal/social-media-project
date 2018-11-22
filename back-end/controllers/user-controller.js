@@ -26,36 +26,30 @@ exports.addUser = (req, res) => {
 exports.login = (req, res) => {
   const email = req.body.email.trim()
   const password = req.body.password
-
+  
   User.findOne({ email }, (err, user) => {
     if ( !user || err ) {
-      console.log('user does not exist')
-      return res.redirect('/login')
+      console.log('User does not exist!')
+      return res.send(err)
     }
 
+    user.comparePassword(password, user.password, function(err, isMatch) {
 
     user.comparePassword(password, (err, isMatch) => {
 
-      if (err) throw err;
-      // res.json(user);
+      if(isMatch) {
+        console.log("Succesful login!")
+        return res.send(user)
+      } else {
+        console.log("Invalid password! Try again.")
+        return res.send(err)
+      }
 
-      console.log("pasok")
-
-      // create token
-      // const tokenPayload = {
-      //   _id: user._id
-      // }
-
-      // const token = jwt.sign(tokenPayload, 'Secret')
-
-      // res.cookie('token', token)
-
-      return res.redirect('/home')
-    })
+    });
 
   })
-
 }
+
 
 // search 
 exports.findAll = (req, res) => {

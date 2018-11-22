@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react'
 import NavBar from './NavBar';
 import Footer from './Footer';
+import 'semantic-ui-css/semantic.min.css';
 import CreatePostForm from './CreatePostForm';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import swal from 'sweetalert2';
@@ -24,6 +25,19 @@ const ProfileCardStyle = {
 }
 
 class ProfileCard extends Component {
+
+    constructor(props){
+        super(props);
+    
+        autobind(this);
+        this.state = {
+            profile : {
+                name: '',
+                bday: ''
+            },
+        };
+    }
+
     render() {
         return (
             <Grid.Column fixed='top' width = {4} style={ ProfileCardStyle }> {/* Profile Info */}
@@ -31,7 +45,7 @@ class ProfileCard extends Component {
                     <Image src={ Laura } size='large' circular />
                     <Card.Content>
                         <Card.Header textAlign = 'center'>
-                        Surname, FirstName M.I.
+                            
                         </Card.Header>
                         <Card.Meta textAlign = 'center'>
                         <p>Birthday</p>
@@ -164,15 +178,20 @@ export default class UserHome extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            posts: []
+            profile : {
+                name: '',
+                bday: ''
+            },
+            posts: [],
         }
-        this.getPosts = this.getPosts.bind(this);        
+        this.getPosts = this.getPosts.bind(this);
     }
+
     getPosts(){
         axios.get("/app/get-posts")
         .then((response) => {
             this.setState({
-                posts: response.data,
+                posts: response.data
             })
         })
         .catch((error) => {
@@ -181,7 +200,7 @@ export default class UserHome extends Component {
     }
 
     componentWillMount(){
-        this.getPosts();    
+        this.getPosts();
     }
     render() {
         return(
