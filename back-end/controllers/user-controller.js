@@ -1,23 +1,31 @@
 'use strict';
 const User = require('mongoose').model('User');
 var ObjectId = require('mongodb').ObjectID;
+const bcrypt = require('bcryptjs');
+
 // signup
 exports.addUser = (req, res) => {
   const newUser = new User(req.body);
 
-  newUser.save((err, user) => {
-    if (err) { res.send({}); }
-    else {
-      res.json(user);
-    }
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser
+          .save()
+          .then(user => res.json(user))
+          .catch(user => console.log(err))
+    });
   });
+
+  console.log("save")
 }
 
 
 // login
 exports.login = (req, res) => {
   const email = req.body.email.trim()
-  const password = re.body.password
+  const password = req.body.password
 
   User.findOne({ email }, (err, user) => {
     if ( !user || err ) {
@@ -25,20 +33,22 @@ exports.login = (req, res) => {
       return res.redirect('/login')
     }
 
+
     user.comparePassword(password, (err, isMatch) => {
-      if (err || !isMatch) {
-        console.log('Wrong password')
-        return res.redirect('/login')
-      }
+
+      if (err) throw err;
+      res.json(user);
+
+      console.log("pasok")
 
       // create token
-      const tokenPayload = {
-        _id: user._id
-      }
+      // const tokenPayload = {
+      //   _id: user._id
+      // }
 
-      const token = jwt.sign(tokenPayload, 'Secret')
+      // const token = jwt.sign(tokenPayload, 'Secret')
 
-      res.cookie('token', token)
+      // res.cookie('token', token)
 
       return res.redirect('/home')
     })

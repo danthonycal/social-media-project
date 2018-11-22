@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from './Footer';
 import local_storage from 'localStorage';
+import swal from 'sweetalert2';
 
 const menuStyle = {
   borderRadius: 0,
@@ -22,6 +23,56 @@ const NavBarHomePage = () => (
 )
 
 export default class LoginForm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email : "",
+      password : ""
+    };
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleEmailChange = this.handleEmailChange.bind(this)
+    this.handlePasswordChange = this.handlePasswordChange.bind(this)
+  }
+
+  validateForm() {
+    return this.state.email.length > 0 && this.state.password.length > 0
+  }
+
+  handleEmailChange = (e) => {
+    this.setState( {email : e.target.value} )
+  }
+
+  handlePasswordChange = (e) => {
+    this.setState( {password : e.target.value} )
+  }
+
+  handleSubmit = (e) => {
+    // e.preventDefault()
+    console.log("Logging in...");
+    const {email, password} = this.state;
+    axios.post("/app/login", {
+      email: email, 
+      password: password
+    })
+    .then(function (response) {
+      if (response.data.redirect === '/login'){
+          console.log("ok")
+          window.location = "/login"
+      } else {
+        swal("Success!", "Successfully logged in!", "success", {
+          button: "Okay"
+        })
+        console.log("try")
+        window.location = "/home"
+      } 
+    })
+    .catch(function(error) {
+        // window.location = "/login"
+        console.log("error")
+    })
+  }
 
   render() {
     return (
@@ -50,6 +101,8 @@ export default class LoginForm extends Component {
                   icon='user'
                   iconPosition='left'
                   placeholder='E-mail address'
+                  value = {this.state.email}
+                  onChange = {this.handleEmailChange}
                 />
                 <Form.Input
                   fluid
@@ -57,8 +110,10 @@ export default class LoginForm extends Component {
                   iconPosition='left'
                   placeholder='Password'
                   type='password'
+                  value = {this.state.password}
+                  onChange = {this.handlePasswordChange}
                 />
-                <Button color='teal' fluid size='large'>Login</Button>
+                <Button color='teal' fluid size='large' onClick = {this.handleSubmit}>Login</Button>
               </Segment>
             </Form>
             <Message>
