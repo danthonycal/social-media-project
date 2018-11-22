@@ -35,8 +35,6 @@ exports.login = (req, res) => {
 
     user.comparePassword(password, user.password, function(err, isMatch) {
 
-    user.comparePassword(password, (err, isMatch) => {
-
       if(isMatch) {
         console.log("Succesful login!")
         return res.send(user)
