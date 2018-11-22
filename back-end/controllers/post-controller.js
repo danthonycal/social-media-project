@@ -13,31 +13,24 @@ exports.add_post_own_wall = (req, res) => {
             res.json(post);
         }
     })
-
-    // User.findByIdAndUpdate(
-    //     info._id,
-    //     {$push : {"posts": newPost}},
-    //     {safe : true, new: true},
-    //     function(err) {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             res.send("Successfully added.");
-    //         }
-    //     }
-    // )
 }
 
-// edit post on own wall
-exports.edit_post_own_wall = (req, res) => {
-
+// edit post
+exports.edit_post = (req, res) => {
+    const _id     = new ObjectId(req.params._id);
+    const newContent = req.body.params.newContent;
+    Post.updateOne({ "_id": _id }, { $set : { content: newContent } }, (err) => {
+        if (err) {
+            res.send(false);
+        } else {
+            res.send(true);
+        }
+    })
 }
 
-// delete post on own wall
+// delete post
 exports.delete_post = (req, res) => {
-    console.log(req.params._id);
     const _id = new ObjectId(req.params._id);
-    
     Post.deleteOne({ "_id": _id }, (err) => {
         if (err) {
             res.send(false);

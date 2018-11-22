@@ -7,14 +7,16 @@ import axios from 'axios';
 import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react'
 import NavBar from './NavBar';
 import Footer from './Footer';
-import StatusUpdateForm from './StatusUpdateForm';
+import CreatePostForm from './CreatePostForm';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import swal from 'sweetalert2';
 
 const date = '3 days ago'
-const summary = 'Laura Faucet created a post'
-const extraText = "Have you seen what's going on in Israel? Can you believe it."
 
+const UpdateModalStyle = {
+    marginTop: '95px',
+    marginLeft: '250px'
+}
 
 class ProfileCard extends Component {
     render() {
@@ -45,17 +47,48 @@ class ProfileCard extends Component {
 class Post extends Component {
     constructor(props) {
         super(props);
-        this.handleDeletePost = this.handleDeletePost.bind(this);
+        autobind(this);
+        this.state = {
+            author      :  '',
+            wallId      :  '',  
+            content     :  '',
+            timestamp   : new Date(),
+            comments    : [],
+        }
+    }
+    handleStatusEdit = (e) => {
+        this.setState( {newContent : e.target.value} );
+    }
+    
+    handleUpdate = (_id, e) => {
+        axios.post('/app/edit-post/'+_id, {
+            params: {
+                _id        : _id,
+                newContent :  this.state.newContent
+            }
+        })
+        .then(function(response) {
+            swal("Updated post!", "nice!","success", {
+                button : "oks"
+            })
+            
+        })
+        this.setState({
+            newContent: ''
+        })
+        this.props.getPosts()
     }
     handleDeletePost = (_id, e) => {
-        // console.log(this.props.postData._id)
         axios.delete('/app/delete-post/'+_id, {
             params: {
                 _id: _id,
             }
-        })
+        }).catch((error) => {
+            console.log(error);
+        });
         this.props.getPosts();
     }
+
     render() {
         const post = this.props.postData;
         return(
@@ -71,25 +104,42 @@ class Post extends Component {
                 </Feed.Extra>
                 <Feed.Meta>
                     <Button icon='trash' onClick={() => this.handleDeletePost(post._id)} />
+                    <Modal trigger={<Button icon='edit' />} style={UpdateModalStyle} closeIcon>
+                        <Header icon='edit' content='Edit Post' />
+                        <Modal.Content>
+                            <Form>
+                                <TextArea placeholder='Update your post' value = {this.state.newContent} onChange = {this.handleStatusEdit} rows={2} style={{ minHeight: 70 }} />
+                            </Form>
+                        </Modal.Content>
+                        <Modal.Actions>
+                        <Button color='red'>
+                            <Icon name='remove' /> Cancel
+                        </Button>
+                        <Button color='green'  onClick = {() => this.handleUpdate(post._id)} >
+                            <Icon name='checkmark' /> Update
+                        </Button>
+                        </Modal.Actions>
+                    </Modal>
                 </Feed.Meta>
             </Feed.Content>
             </Feed.Event>
+
         )
     } 
 }
 class PostFeed extends Component {
     constructor(props) {
         super(props);
-        
     }
     
     render() {
-        const posts = this.props.posts
-        
+        const posts = this.props.posts;
         return(
             <Feed>
+                <CreatePostForm getPosts={ this.props.getPosts }/>
+                <br />
                 {
-                    posts.map((post) => {
+                    posts.reverse().map((post) => {
                         return(
                             <Post postData = { post } getPosts = { this.props.getPosts } />
                         )
@@ -110,11 +160,8 @@ export default class UserHome extends Component {
         this.getPosts = this.getPosts.bind(this);        
     }
     getPosts(){
-        console.log("Getting posts..");
         axios.get("/app/get-posts")
         .then((response) => {
-            console.log("response.data: ");
-            console.log(response.data);
             this.setState({
                 posts: response.data,
             })
@@ -136,7 +183,6 @@ export default class UserHome extends Component {
                     <Grid.Column width={3} ></Grid.Column>
                     <Grid.Column width={8} >
                         <Container text style={{ marginTop: '7em' }}>
-                            <StatusUpdateForm getPosts={ this.getPosts }/>
                             <PostFeed posts={ this.state.posts } getPosts={ this.getPosts } />
                         </Container>
                     </Grid.Column>

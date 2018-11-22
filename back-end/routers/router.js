@@ -9,6 +9,7 @@ const UserController = require('../controllers/user-controller');
 /* post controllers */
 router.get('/get-posts', PostController.get_all_posts);
 router.post('/add-posts', PostController.add_post_own_wall);
+router.post('/edit-post/:_id', PostController.edit_post);
 router.delete('/delete-post/:_id', PostController.delete_post);
 
 /* user controllers */

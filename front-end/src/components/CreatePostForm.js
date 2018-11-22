@@ -15,7 +15,7 @@ const DashboardStyle = {
     marginTop: '-10px',
 }
 
-export default class StatusUpdateForm extends Component {
+export default class CreatePostForm extends Component {
     constructor(props) {
         super(props);
         autobind(this);
