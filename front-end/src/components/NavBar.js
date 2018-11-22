@@ -20,21 +20,33 @@ class Nav extends Component {
   render() {
     
     return(
-      <Menu borderless size = 'large' style = {menuStyle}>
-        
-                <Container>
-                  <Menu.Item as = {Link} to = '#'>Logo</Menu.Item>
-                  <Menu.Item ></Menu.Item>
-                  <Menu.Item position = 'right'>
-                    <Dropdown text = {'samp'} icon = 'user circle outline' pointing>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>Button 1</Dropdown.Item>
-                        <Dropdown.Item>Button 2</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </Menu.Item>
-                </Container>
-      </Menu>
+      <Menu fixed='top' className='right menu' inverted>
+        <Container>
+          <Menu.Item as='a' header>
+            <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
+            Project Name
+          </Menu.Item>
+          <Menu.Item as='a'>Home</Menu.Item>
+
+          <Dropdown item simple text='Dropdown'>
+            <Dropdown.Menu >
+              <Dropdown.Item>List Item</Dropdown.Item>
+              <Dropdown.Item>List Item</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Header>Header Item</Dropdown.Header>
+              <Dropdown.Item>
+                <i className='dropdown icon' />
+                <span className='text'>Submenu</span>
+                <Dropdown.Menu>
+                  <Dropdown.Item>List Item</Dropdown.Item>
+                  <Dropdown.Item>List Item</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Item>
+              <Dropdown.Item>List Item</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Container>
+    </Menu>
     )
   }
 }

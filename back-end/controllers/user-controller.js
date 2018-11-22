@@ -1,5 +1,6 @@
 'use strict';
 const User = require('mongoose').model('User');
+var ObjectId = require('mongodb').ObjectID;
 // signup
 exports.addUser = (req, res) => {
   const newUser = new User(req.body);
@@ -59,6 +60,18 @@ exports.findAll = (req, res) => {
   });
 }
 
+exports.findById = (req, res) => {
+  const userId = req.params._id;
+  console.log(userId);
+  User.findOne( { "_id": userId }, (err, user) => {
+    if(err) {
+      console.log(err);
+    } else {
+      console.log(user);
+      res.send(user)
+    }
+  })
+}
 exports.findByUsername = (req, res) => {
   const username = req.params.username;
 

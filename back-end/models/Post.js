@@ -7,6 +7,7 @@ const Comment = require('./Comment');
 
 const PostSchema = new Schema({
   author      : { type: Schema.ObjectId, ref: User },
+  wallId      : { type: Schema.ObjectId, ref: User},
   content     : { type: String, default: '' },
   timestamp   : { type: Date, default: Date.now },
   comments    : [{ type: Schema.ObjectId, ref: Comment }],
