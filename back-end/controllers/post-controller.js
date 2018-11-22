@@ -22,7 +22,7 @@ exports.edit_post = (req, res) => {
     Post.updateOne({ "_id": _id }, { $set : { content: newContent } }, (err) => {
         if (err) {
             res.send(false);
-        } else {
+        } else {    
             res.send(true);
         }
     })

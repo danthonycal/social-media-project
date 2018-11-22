@@ -37,7 +37,7 @@ exports.login = (req, res) => {
     user.comparePassword(password, (err, isMatch) => {
 
       if (err) throw err;
-      res.json(user);
+      // res.json(user);
 
       console.log("pasok")
 

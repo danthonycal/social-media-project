@@ -18,10 +18,15 @@ const UpdateModalStyle = {
     marginLeft: '250px'
 }
 
+const ProfileCardStyle = {
+    marginTop: '7em',
+    
+}
+
 class ProfileCard extends Component {
     render() {
         return (
-            <Grid.Column width = {4}> {/* Profile Info */}
+            <Grid.Column fixed='top' width = {4} style={ ProfileCardStyle }> {/* Profile Info */}
                 <Card>
                     <Image src={ Laura } size='large' circular />
                     <Card.Content>
@@ -54,8 +59,12 @@ class Post extends Component {
             content     :  '',
             timestamp   : new Date(),
             comments    : [],
+            modalOpen: false
         }
     }
+    handleOpen = () => this.setState({ modalOpen: true })
+
+    handleClose = () => this.setState({ modalOpen: false })
     handleStatusEdit = (e) => {
         this.setState( {newContent : e.target.value} );
     }
@@ -180,7 +189,9 @@ export default class UserHome extends Component {
                 <NavBar />
                 <Grid centered columns={1}>
                     <Grid.Column width={1} ></Grid.Column>
-                    <Grid.Column width={3} ></Grid.Column>
+                    <Grid.Column width={3} >
+                        <ProfileCard />
+                    </Grid.Column>
                     <Grid.Column width={8} >
                         <Container text style={{ marginTop: '7em' }}>
                             <PostFeed posts={ this.state.posts } getPosts={ this.getPosts } />
