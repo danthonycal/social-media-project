@@ -37,10 +37,10 @@ exports.login = (req, res) => {
 
       if(isMatch) {
         console.log("Succesful login!")
-        return res.send(user)
+        return res.send("success")
       } else {
         console.log("Invalid password! Try again.")
-        return res.send(err)
+        return res.send("invalid")
       }
 
     });
