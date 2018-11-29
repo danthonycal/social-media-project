@@ -10,6 +10,7 @@ import Footer from './Footer';
 import 'semantic-ui-css/semantic.min.css';
 import CreatePostForm from './CreatePostForm';
 import Laura from '../assets/img/avatar/laura-large.jpg';
+import local_storage from 'localStorage';
 import swal from 'sweetalert2';
 
 const date = '3 days ago'
@@ -45,14 +46,14 @@ class ProfileCard extends Component {
                     <Image src={ Laura } size='large' circular />
                     <Card.Content>
                         <Card.Header textAlign = 'center'>
-                            
+                            {this.props.userData.name}
                         </Card.Header>
                         <Card.Meta textAlign = 'center'>
-                        <p>Birthday</p>
+                        <p>{this.props.userData.bday}</p>
                         </Card.Meta>
                         <Card.Description textAlign = 'center'>
                         <p>Friend: </p>
-                        <p>Friend, Friend, Friend</p>
+                        
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
@@ -157,6 +158,7 @@ class PostFeed extends Component {
     
     render() {
         const posts = this.props.posts;
+        const userData = this.props.userData;
         return(
             <Feed>
                 <CreatePostForm getPosts={ this.props.getPosts }/>
@@ -164,7 +166,7 @@ class PostFeed extends Component {
                 {
                     posts.reverse().map((post) => {
                         return(
-                            <Post postData = { post } getPosts = { this.props.getPosts } />
+                            <Post postData = { post } getPosts = { this.props.getPosts } userData={this.userData}/>
                         )
                     })
                 }
@@ -178,11 +180,15 @@ export default class UserHome extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            profile : {
-                name: '',
-                bday: ''
-            },
-            posts: [],
+            _id:      '',
+            email:    '',
+            name:     '',
+            username: '',
+            password: '',
+            bday:     '',
+            about:    '',
+            friends:  [],   
+            posts:    [],
         }
         this.getPosts = this.getPosts.bind(this);
     }
@@ -200,7 +206,22 @@ export default class UserHome extends Component {
     }
 
     componentWillMount(){
-        this.getPosts();
+        if(local_storage.getItem("loggedIn")!=="true"){
+            window.location = "/";
+        } else {
+            const user = JSON.parse(local_storage.getItem("userData"))
+            this.setState({
+                _id:      user._id,
+                email:    user.email,
+                name:     user.name,
+                username: user.username,
+                password: user.password,
+                bday:     user.birthday,
+                about:    user.about,
+                friends:  user.friends
+            })
+            this.getPosts();
+        }
     }
     render() {
         return(
@@ -209,11 +230,11 @@ export default class UserHome extends Component {
                 <Grid centered columns={1}>
                     <Grid.Column width={1} ></Grid.Column>
                     <Grid.Column width={3} >
-                        <ProfileCard />
+                        <ProfileCard userData={this.state}/>
                     </Grid.Column>
                     <Grid.Column width={8} >
                         <Container text style={{ marginTop: '7em' }}>
-                            <PostFeed posts={ this.state.posts } getPosts={ this.getPosts } />
+                            <PostFeed posts={ this.state.posts } getPosts={ this.getPosts } userData={this.state}/>
                         </Container>
                     </Grid.Column>
                     <Grid.Column width={3} ></Grid.Column>

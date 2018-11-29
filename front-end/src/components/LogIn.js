@@ -57,12 +57,24 @@ export default class LoginForm extends Component {
     })
     .then(function (response) {
       if (response.status === 200){
-        if (response.data === "success") {     
+        if (response.status === 200) {     
           swal("Success!", "Successfully logged in!", "success", {
             button: "Okay"
           }).then(function () {
-            console.log("Successfully logged in!")
-            window.location = "/home"
+            let userData = {
+              _id:      response.data._id,
+              email:    response.data.email,
+              name:     response.data.name,
+              username: response.data.username,
+              password: response.data.password,
+              birthday: response.data.birthday,
+              about:    response.data.about,
+              friends:  response.data.friends
+            }
+            console.log("Successfully logged in!");
+            local_storage.setItem("loggedIn", "true");
+            local_storage.setItem("userData", JSON.stringify(userData));
+            window.location = "/home";
           });
         } else {
           swal("Login failed!", "Invalid password. Try again.","error", {
