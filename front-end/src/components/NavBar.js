@@ -3,7 +3,8 @@ import autobind from 'react-autobind';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Button,  Container, Checkbox, Dropdown, Header,Icon, Menu,  Segment, Image, Sticky, Rail} from 'semantic-ui-react'
+import local_storage from 'localStorage';
+import { Button,  Container, Checkbox, Dropdown, Header, Icon, Menu,  Segment, Image, Sticky, Rail} from 'semantic-ui-react'
 
 const menuStyle = {
   borderRadius: 0,
@@ -15,22 +16,41 @@ const menuStyle = {
 
 
 class Nav extends Component {
-  
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeItem: ''
+    }
+    this.handleItemClick = this.handleItemClick.bind(this);
+  }
+
+  handleItemClick = (e, { name }) => {
+    this.setState( { activeItem: name } )
+    console.log("View Profile")
+    window.location ='/profile'
+  }
 
   render() {
-    
+
+    const { activeItem } = this.state
+
     return(
         <Menu fixed='top' className='right menu' inverted>
           <Container>
+            
             <Menu.Item as='a' header>
               <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
               Project Name
             </Menu.Item>
-            <Menu.Item as='a'>Home</Menu.Item>
 
             <Dropdown item simple text='Dropdown'>
               <Dropdown.Menu >
-                <Dropdown.Item>List Item</Dropdown.Item>
+                <Dropdown.Item
+                  name='account'
+                  active={activeItem === 'account'}
+                  onClick={this.handleItemClick}
+                ><Icon name='vcard' /> View Profile</Dropdown.Item>
                 <Dropdown.Item>List Item</Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Header>Header Item</Dropdown.Header>
@@ -45,6 +65,9 @@ class Nav extends Component {
                 <Dropdown.Item>List Item</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
+            <Menu.Item as='a' header>Home</Menu.Item>
+
           </Container>
         </Menu>
     )
