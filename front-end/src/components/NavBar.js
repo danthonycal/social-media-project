@@ -27,8 +27,14 @@ class Nav extends Component {
 
   handleItemClick = (e, { name }) => {
     this.setState( { activeItem: name } )
-    console.log("View Profile")
-    window.location ='/profile'
+    
+    if (name === 'account') {
+      console.log("View Profile")
+      window.location = '/profile'
+    } else if (name === 'home') {
+      console.log("Home")
+      window.location = '/home'
+    }
   }
 
   render() {
@@ -66,7 +72,11 @@ class Nav extends Component {
               </Dropdown.Menu>
             </Dropdown>
 
-            <Menu.Item as='a' header>Home</Menu.Item>
+            <Menu.Item as='a' header
+              name='home'
+              active={activeItem === 'home'}
+              onClick={this.handleItemClick}
+            >Home</Menu.Item>
 
           </Container>
         </Menu>

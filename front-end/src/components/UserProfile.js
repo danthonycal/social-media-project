@@ -34,16 +34,51 @@ class Profile extends Component {
 
 	render() {
 		return(
-			<Container>
-				<div>
-					<Header as='h2' icon textAlign='center'>
-						<Icon name='users' circular />
-						<Header.Content>{this.props.userData.name}</Header.Content>
-					</Header>
-				</div>
-			</Container>
+			<div>
+				<Header as='h2' icon textAlign='center'>
+					<Icon name='users' circular />
+					<Header.Content>{this.props.userData.username}</Header.Content>
+				</Header>
+			</div>
 		)
 	}	
+}
+
+class EditModal extends Component {
+
+	state = { open: false }
+
+	closeConfigShow = (closeOnDimmerClick) => () => {
+		this.setState({ closeOnDimmerClick, open: true })
+	}
+
+	close = () => this.setState({ open: false })
+
+	render() {
+		const { open, closeOnDimmerClick } = this.state
+
+		return (
+			<div>
+				<Button onClick = {this.closeConfigShow(true, false)}>No Close on Dimmer Click </Button>
+
+				<Modal
+					
+					open={open}
+					closeOnDimmerClick={closeOnDimmerClick}
+					onClose={this.close}
+				>
+					<Modal.Header>Delete Your Account</Modal.Header>
+					<Modal.Content>
+						<p>Are you sure you want to delete your account?</p>
+					</Modal.Content>
+					<Modal.Actions>
+						<Button onClick={this.close} negative>No</Button>
+						<Button onClick={this.close} positive labelPosition='right' icon='checkmark' content='Yes'/>
+					</Modal.Actions>
+				</Modal>
+			</div>
+		)
+	}
 }
 
 export default class UserProfile extends Component {
@@ -60,8 +95,9 @@ export default class UserProfile extends Component {
 	            about:    '',
 	            friends:  [],   
 	            // posts:    [],
-        	}
-        }
+        	},
+        	open : false
+        };
     }
 
 	componentWillMount() {
@@ -83,16 +119,38 @@ export default class UserProfile extends Component {
 	}
 
 	render() {
+
 		return(
 			<div>
-				<NavBar />
-                <Grid centered columns={1}>
-                    <Grid.Column width={1} ></Grid.Column>
-                    <Grid.Column width={3} >
-                        <Profile userData = {this.state} />
-                    </Grid.Column>
-                </Grid>
-				
+				<Segment>
+					<NavBar />
+				<Divider hidden />
+					<Grid celled>
+						<Grid.Row>
+							<Grid.Column width={3}>
+								<Profile userData = {this.state} />
+							</Grid.Column>
+							<Grid.Column width={13}>
+								<Button content='Add as friend' icon='user plus' labelPosition='left' />
+							</Grid.Column>
+						</Grid.Row>
+
+						<Grid.Row>
+							<Grid.Column width={3}>
+								<h2>About</h2>
+								<Icon name='edit' /> Name: {this.state.name}<br />
+								<Icon name='edit' /> Age: <br /> 
+								<Icon name='edit' /> Birthday: {this.state.bday}<br />
+							</Grid.Column>
+							<Grid.Column width={10}>
+								<Image src='/images/wireframe/paragraph.png' />
+							</Grid.Column>
+							<Grid.Column width={3}>
+								<Image src='/images/wireframe/image.png' />
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
 			</div>
 		)
 	}	
