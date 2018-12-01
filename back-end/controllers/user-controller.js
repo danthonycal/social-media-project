@@ -30,7 +30,7 @@ exports.login = (req, res) => {
   User.findOne({ email }, (err, user) => {
     if ( !user || err ) {
       console.log('User does not exist!')
-      return res.send(err)
+      return res.send("invalid")
     }
 
     user.comparePassword(password, user.password, function(err, isMatch) {
@@ -45,10 +45,9 @@ exports.login = (req, res) => {
             return res.status(200).send(user)
           }
         })
-        // return res.send("success")
       } else {
-        console.log("Invalid password! Try again.")
-        return res.status(403).send("invalid")
+        console.log("Invalid username/password! Try again.")
+        return res.send("invalid")
       }
 
     });

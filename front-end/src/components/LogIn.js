@@ -57,10 +57,10 @@ export default class LoginForm extends Component {
     .then(function (response) {
       if (response.status === 200){
         if (response.data === "invalid") {
-          swal("Login failed!", "Invalid password. Try again.","error", {
+          swal("Login failed!", "Invalid username/password. Try again.","error", {
             buttons:  "Okay"
           }).then(function () {          
-            console.log("Invalid password!")
+            console.log("Invalid username/password!")
             window.location = "/login"
           });
         }

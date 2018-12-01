@@ -12,6 +12,7 @@ import CreatePostForm from './CreatePostForm';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
+import '../css/userprofile.css'
 
 class Profile extends Component {
 
@@ -21,64 +22,66 @@ class Profile extends Component {
         autobind(this);	
         this.state = {
         	profile : {
-	            email:    '',
-	            name:     '',
+	            // email:    '',
+	            // name:     '',
 	            username: '',
-	            bday:     '',
-	            about:    '',
-	            friends:  [],   
+	            // bday:     '',
+	            // about:    '',
+	            // friends:  [],   
 	            // posts:    [],
         	}
         }
+    	this.close = this.close.bind(this)
+        this.handleUsernameChange = this.handleUsernameChange.bind(this)
     }	
 
+    close = () => this.setState({ open: false })
+
+    handleUsernameChange = (e) => {
+    	this.setState({ username : e.target.value })
+    }
+
 	render() {
+
+		const inlineStyle = {
+			modal : {
+			marginTop: '0px !important',
+			marginLeft: 'auto',
+			marginRight: 'auto'
+			}
+		};
+
 		return(
 			<div>
 				<Header as='h2' icon textAlign='center'>
 					<Icon name='users' circular />
 					<Header.Content>{this.props.userData.username}</Header.Content>
 				</Header>
-			</div>
-		)
-	}	
-}
-
-class EditModal extends Component {
-
-	state = { open: false }
-
-	closeConfigShow = (closeOnDimmerClick) => () => {
-		this.setState({ closeOnDimmerClick, open: true })
-	}
-
-	close = () => this.setState({ open: false })
-
-	render() {
-		const { open, closeOnDimmerClick } = this.state
-
-		return (
-			<div>
-				<Button onClick = {this.closeConfigShow(true, false)}>No Close on Dimmer Click </Button>
-
-				<Modal
-					
-					open={open}
-					closeOnDimmerClick={closeOnDimmerClick}
-					onClose={this.close}
-				>
-					<Modal.Header>Delete Your Account</Modal.Header>
+				<Modal style={inlineStyle.modal} size='mini' trigger = { <Button icon='edit' size='mini' data-tooltip="Edit username" /> }>
+					<Modal.Header>
+						Edit Username
+					</Modal.Header>
 					<Modal.Content>
-						<p>Are you sure you want to delete your account?</p>
+						<Form>
+							<Form.Input
+								fluid
+								placeholder={this.props.userData.username}
+								onChange = {this.handleUsernameChange}
+							>
+							</Form.Input>
+						</Form>
 					</Modal.Content>
 					<Modal.Actions>
-						<Button onClick={this.close} negative>No</Button>
-						<Button onClick={this.close} positive labelPosition='right' icon='checkmark' content='Yes'/>
+						<Button.Group>
+							<Button negative onClick= { this.close } >Cancel</Button>
+							<Button.Or />
+							<Button positive>Save</Button>
+						</Button.Group>
 					</Modal.Actions>
 				</Modal>
 			</div>
 		)
-	}
+	}	
 }
 
 export default class UserProfile extends Component {
@@ -98,6 +101,20 @@ export default class UserProfile extends Component {
         	},
         	open : false
         };
+
+        this.close = this.close.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleBdayChange = this.handleBdayChange.bind(this)
+    }
+
+    close = () => this.setState({ open: false })
+
+    handleNameChange = (e) => {
+    	this.setState({ name : e.target.value })
+    }
+
+    handleBdayChange = (e) => {
+    	this.setState({ bday : e.target.value })
     }
 
 	componentWillMount() {
@@ -118,39 +135,85 @@ export default class UserProfile extends Component {
 		}
 	}
 
+
 	render() {
+	
+		const inlineStyle = {
+			modal : {
+			marginTop: '0px !important',
+			marginLeft: 'auto',
+			marginRight: 'auto'
+			}
+		};
 
 		return(
 			<div>
-				<Segment>
-					<NavBar />
-				<Divider hidden />
+				<NavBar />
+				<div className='profile'>
 					<Grid celled>
 						<Grid.Row>
 							<Grid.Column width={3}>
 								<Profile userData = {this.state} />
 							</Grid.Column>
 							<Grid.Column width={13}>
-								<Button content='Add as friend' icon='user plus' labelPosition='left' />
+								<Button><Icon name='user plus' />Add as friend</Button>
 							</Grid.Column>
 						</Grid.Row>
 
 						<Grid.Row>
 							<Grid.Column width={3}>
 								<h2>About</h2>
-								<Icon name='edit' /> Name: {this.state.name}<br />
-								<Icon name='edit' /> Age: <br /> 
-								<Icon name='edit' /> Birthday: {this.state.bday}<br />
+								Name: {this.state.name}
+								<Modal style={inlineStyle.modal} size='mini' trigger = { <Button icon='edit' floated='right' size='mini' data-tooltip="Edit name" /> }>
+									<Modal.Header>
+										Edit Name
+									</Modal.Header>
+									<Modal.Content>
+										<Form>
+											<Form.Field>
+												<input placeholder={this.state.name} />
+											</Form.Field>
+										</Form>
+									</Modal.Content>
+									<Modal.Actions>
+										<Button.Group>
+											<Button negative >Cancel</Button>
+											<Button.Or />
+											<Button positive>Save</Button>
+										</Button.Group>
+									</Modal.Actions>
+								</Modal>
+								<br /><br />
+								Birthday: {this.state.bday}
+								<Modal style={inlineStyle.modal} size='mini' position='fixed' trigger = { <Button icon='edit' floated='right' size='mini' data-tooltip="Edit birthday"/> } >
+									<Modal.Header>
+										Edit Birthday
+									</Modal.Header>
+									<Modal.Content>
+										<Form.Input
+											fluid
+											type = 'date'
+										/>
+									</Modal.Content>
+									<Modal.Actions>
+										<Button.Group>
+											<Button negative onClose={this.close}>Cancel</Button>
+											<Button.Or />
+											<Button positive>Save</Button>
+										</Button.Group>
+									</Modal.Actions>
+								</Modal>
+								<br />
 							</Grid.Column>
 							<Grid.Column width={10}>
-								<Image src='/images/wireframe/paragraph.png' />
+								
 							</Grid.Column>
 							<Grid.Column width={3}>
-								<Image src='/images/wireframe/image.png' />
+								
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
-				</Segment>
+				</div>
 			</div>
 		)
 	}	
