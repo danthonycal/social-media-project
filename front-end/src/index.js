@@ -11,7 +11,8 @@ ReactDOM.render((
   <BrowserRouter>
     <div>
         <Route exact={true} path='/' component={HomePage} />
-    	<Route exact={true} path='/login' component={LogIn} />
+        {/* <Route exact={true} path='/:userId' component={OtherUser} /> */}
+    	  <Route exact={true} path='/login' component={LogIn} />
         <Route exact={true} path='/home' component={UserHome} />
     </div>
   </BrowserRouter>

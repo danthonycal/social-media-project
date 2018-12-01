@@ -56,13 +56,13 @@ export default class LoginForm extends Component {
       password: password,
     })
     .then(function (response) {
-      if (response.status === 200){
-        if (response.status === 200) {     
+      if (response.status === 200 && response.data.length!==0) {     
           swal("Success!", "Successfully logged in!", "success", {
             button: "Okay"
           }).then(function () {
             let userData = {
               _id:      response.data._id,
+              wallId:   response.data._id,
               email:    response.data.email,
               name:     response.data.name,
               username: response.data.username,
@@ -76,14 +76,14 @@ export default class LoginForm extends Component {
             local_storage.setItem("userData", JSON.stringify(userData));
             window.location = "/home";
           });
-        } else {
+      } else if (response.status === 403) {
           swal("Login failed!", "Invalid password. Try again.","error", {
             buttons:  "Okay"
           }).then(function () {          
             console.log("Invalid password!")
             window.location = "/login"
           });
-        }
+        
       } else {
         window.alert("Something went wrong. Try again.")
         window.location = "/login"

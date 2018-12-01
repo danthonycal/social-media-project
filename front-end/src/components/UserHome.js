@@ -5,20 +5,15 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react'
+import PostFeed from './PostFeed';
 import NavBar from './NavBar';
 import Footer from './Footer';
 import 'semantic-ui-css/semantic.min.css';
-import CreatePostForm from './CreatePostForm';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
 
-const date = '3 days ago'
-
-const UpdateModalStyle = {
-    marginTop: '95px',
-    marginLeft: '250px'
-}
+// const date = '3 days ago'
 
 const ProfileCardStyle = {
     marginTop: '7em',
@@ -64,135 +59,25 @@ class ProfileCard extends Component {
         )
     }
 }
-class Post extends Component {
-    constructor(props) {
-        super(props);
-        autobind(this);
-        this.state = {
-            author      :  '',
-            wallId      :  '',  
-            content     :  '',
-            timestamp   : new Date(),
-            comments    : [],
-            modalOpen: false
-        }
-    }
-    handleOpen = () => this.setState({ modalOpen: true })
 
-    handleClose = () => this.setState({ modalOpen: false })
-    handleStatusEdit = (e) => {
-        this.setState( {newContent : e.target.value} );
-    }
-    
-    handleUpdate = (_id, e) => {
-        axios.post('/app/edit-post/'+_id, {
-            params: {
-                _id        : _id,
-                newContent :  this.state.newContent
-            }
-        })
-        .then(function(response) {
-            swal("Updated post!", "nice!","success", {
-                button : "oks"
-            })
-            
-        })
-        this.setState({
-            newContent: ''
-        })
-        this.props.getPosts()
-    }
-    handleDeletePost = (_id, e) => {
-        axios.delete('/app/delete-post/'+_id, {
-            params: {
-                _id: _id,
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
-        this.props.getPosts();
-    }
-
-    render() {
-        const post = this.props.postData;
-        return(
-            <Feed.Event key={post._id}>
-            <Feed.Label image={ Laura } />
-            <Feed.Content>
-                <Feed.Summary>
-                { post.author } 
-                <Feed.Date>3 days ago on { post.author }'s wall</Feed.Date>
-                </Feed.Summary>
-                <Feed.Extra text>
-                    { post.content }
-                </Feed.Extra>
-                <Feed.Meta>
-                    <Button icon='trash' onClick={() => this.handleDeletePost(post._id)} />
-                    <Modal trigger={<Button icon='edit' />} style={UpdateModalStyle} closeIcon>
-                        <Header icon='edit' content='Edit Post' />
-                        <Modal.Content>
-                            <Form>
-                                <TextArea placeholder='Update your post' value = {this.state.newContent} onChange = {this.handleStatusEdit} rows={2} style={{ minHeight: 70 }} />
-                            </Form>
-                        </Modal.Content>
-                        <Modal.Actions>
-                        <Button color='red'>
-                            <Icon name='remove' /> Cancel
-                        </Button>
-                        <Button color='green'  onClick = {() => this.handleUpdate(post._id)} >
-                            <Icon name='checkmark' /> Update
-                        </Button>
-                        </Modal.Actions>
-                    </Modal>
-                </Feed.Meta>
-            </Feed.Content>
-            </Feed.Event>
-
-        )
-    } 
-}
-class PostFeed extends Component {
-    constructor(props) {
-        super(props);
-    }
-    
-    render() {
-        const posts = this.props.posts;
-        const userData = this.props.userData;
-        return(
-            <Feed>
-                <CreatePostForm getPosts={ this.props.getPosts }/>
-                <br />
-                {
-                    posts.reverse().map((post) => {
-                        return(
-                            <Post postData = { post } getPosts = { this.props.getPosts } userData={this.userData}/>
-                        )
-                    })
-                }
-            </Feed>
-        )
-    }
-
-}
 
 export default class UserHome extends Component {
     constructor(props) {
         super(props);
+        autobind(this);
         this.state = {
-            _id:      '',
-            email:    '',
-            name:     '',
-            username: '',
-            password: '',
-            bday:     '',
-            about:    '',
-            friends:  [],   
-            posts:    [],
+            _id      : '',
+            wallId   : '',
+            email    : '',
+            name     : '',
+            username : '',
+            password : '',
+            bday     : '',
+            about    : '',
+            friends  : [],   
+            posts    : []
         }
-        this.getPosts = this.getPosts.bind(this);
     }
-
     getPosts(){
         axios.get("/app/get-posts")
         .then((response) => {
@@ -211,14 +96,15 @@ export default class UserHome extends Component {
         } else {
             const user = JSON.parse(local_storage.getItem("userData"))
             this.setState({
-                _id:      user._id,
-                email:    user.email,
-                name:     user.name,
-                username: user.username,
-                password: user.password,
-                bday:     user.birthday,
-                about:    user.about,
-                friends:  user.friends
+                _id      : user._id,
+                wallId   : user.wallId,
+                email    : user.email,
+                name     : user.name,
+                username : user.username,
+                password : user.password,
+                bday     : user.birthday,
+                about    : user.about,
+                friends  : user.friends
             })
             this.getPosts();
         }
@@ -232,9 +118,9 @@ export default class UserHome extends Component {
                     <Grid.Column width={3} >
                         <ProfileCard userData={this.state}/>
                     </Grid.Column>
-                    <Grid.Column width={8} >
+                    <Grid.Column width={8}>
                         <Container text style={{ marginTop: '7em' }}>
-                            <PostFeed posts={ this.state.posts } getPosts={ this.getPosts } userData={this.state}/>
+                            <PostFeed posts={this.state.posts} getPosts={this.getPosts} userData={this.state}/>
                         </Container>
                     </Grid.Column>
                     <Grid.Column width={3} ></Grid.Column>

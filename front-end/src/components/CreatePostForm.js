@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item} from 'semantic-ui-react'
+import local_storage from 'localStorage';
 import swal from 'sweetalert2';
 
 const DashboardStyle = {
@@ -20,8 +21,10 @@ export default class CreatePostForm extends Component {
         super(props);
         autobind(this);
         this.state = {
-            author      :  '',
-            wallId      :  '',  
+            authorId    :  '',
+            authorName  :  '',
+            wallId      :  '',
+            wallOwner   :  '',  
             content     :  '',
             timestamp   : new Date(),
             comments    : [],
@@ -34,22 +37,33 @@ export default class CreatePostForm extends Component {
     
     handleClick = (e) => {
         axios.post('/app/add-posts', {
-            author    : "5bed07d7f6e89f1ca45fac4b",
-            wallId    : "5bed07d7f6e89f1ca45fac4b",
-            content   : this.state.content,
-            timestamp : this.state.timestamp,
-            comments  : this.state.comments
+            authorId   : this.state.authorId,
+            authorName : this.state.authorName,
+            wallId     : this.state.wallId,
+            wallOwner  : this.state.wallOwner,
+            content    : this.state.content,
+            timestamp  : this.state.timestamp,
+            comments   : this.state.comments
         })
         .then(function(response) {
-            swal("Added a comment!", "nice!","success", {
+            swal("Added post!", "nice!","success", {
                 button : "oks"
             })
-            
         })
         this.setState({
             content: ''
         })
         this.props.getPosts()
+    }
+    componentWillMount() {
+        const user = JSON.parse(local_storage.getItem("userData"));
+        console.log(user);
+        this.setState({
+            authorId   : user._id,
+            wallId     : user.wallId,
+            authorName : user.name,
+            wallOwner  : user.name,
+        })
     }
 
     render() {

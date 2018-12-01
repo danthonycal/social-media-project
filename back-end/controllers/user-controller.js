@@ -40,6 +40,7 @@ exports.login = (req, res) => {
         User.findOne( { "email": email }, (err, user) => {
           if(err) {
             console.log(err);
+            return res.status(403).send("invalid")
           } else {
             console.log(user);
             return res.status(200).send(user)
@@ -72,7 +73,6 @@ exports.findAll = (req, res) => {
 
 exports.findById = (req, res) => {
   const userId = req.params._id;
-  console.log(userId);
   User.findOne( { "_id": userId }, (err, user) => {
     if(err) {
       console.log(err);
@@ -85,7 +85,7 @@ exports.findById = (req, res) => {
 exports.findByUsername = (req, res) => {
   const username = req.params.username;
 
-  User.findOne({ username }, (err, user) => {
+  User.findOne({ "username": username }, (err, user) => {
     if (err) {
       console.log(err);
       res.send({});

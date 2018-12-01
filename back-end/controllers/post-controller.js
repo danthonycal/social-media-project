@@ -8,7 +8,7 @@ exports.add_post_own_wall = (req, res) => {
     const newPost = new Post(req.body);
     // var query = { username : postAuthor}
     newPost.save((err, post) => {           //add post to the database
-        if (err) { res.send(500); }
+        if (err) { res.status(500); }
         else {
             res.json(post);
         }
