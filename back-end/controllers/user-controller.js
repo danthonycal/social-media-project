@@ -62,7 +62,6 @@ exports.login = (req, res) => {
 exports.findAll = (req, res) => {
   User.find({}, (err, users) => {
     if (!err) {
-      console.log("hello");
       res.send(users);
     } else {
       console.log(err);
