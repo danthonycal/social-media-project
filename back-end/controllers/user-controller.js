@@ -94,11 +94,27 @@ exports.findByUsername = (req, res) => {
   });
 }
 
+// edit profile
+
+exports.editProfile = (req, res) => {
+  const _id = new ObjectId(req.params._id);
+  const newUsername = req.body.params.newUsername;
+  const newName = req.body.params.newName;
+  const newBday = req.body.params.newBday;
+  const newEmail = req.body.params.newEmail;
+
+  User.updateOne({ "_id" : _id }, {$set : { username : newUsername, name : newName, birthday : newBday, email : newEmail } }, (err) => {
+    if (err) {
+      res.send(false);
+    } else {
+      res.send(true);
+    }
+  })
+}
+
 // add friend
 
 // unfriend
-
-// edit profile
 
 // approve friend request
 
