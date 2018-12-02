@@ -10,11 +10,17 @@ import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
 
+const UpdateModalStyle = {
+    marginTop: '95px',
+    marginLeft: '250px'
+}
+
 class SingleComment extends Component {
     constructor(props) {
         super(props);
         autobind(this);
         this.state = {
+            _id         : '',
             authorId    : '',
             authorName  : '',
             postId      : '',
@@ -23,8 +29,19 @@ class SingleComment extends Component {
             timestamp   : new Date()
         }
     }
+    handleDeleteComment = (_id, e) => {
+        axios.delete('/app/delete-comment/'+_id, {
+            params: {
+                _id: _id,
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+        this.props.getPosts();
+    }
     componentWillMount() {
         this.setState({
+            _id        : this.props.commentData._id,
             authorId   : this.props.commentData.authorId,
             authorName : this.props.commentData.authorName,
             postId     : this.props.commentData._id,
@@ -44,7 +61,19 @@ class SingleComment extends Component {
                     </Comment.Metadata>
                     <Comment.Text>{this.state.content}</Comment.Text>
                     <Comment.Actions>
-                    <a>Reply</a>
+                        <Button size='mini' icon='remove' onClick={() => this.handleDeleteComment(this.state._id)} />
+						<Modal trigger={<Button size='mini' icon='edit' />} style={UpdateModalStyle} closeIcon>
+							<Header icon='edit' content='Edit Comment' />
+							<Modal.Content>
+								<Form>
+									<TextArea placeholder='Update comment' value = {this.state.content} onChange={this.handleStatusEdit} rows={2} style={{minHeight: 70}} />
+								</Form>
+							</Modal.Content>
+							<Modal.Actions>
+                                <Button size='mini' color='red' content='Cancel' icon='remove' />
+                                <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
+							</Modal.Actions>
+						</Modal>
                     </Comment.Actions>
                 </Comment.Content>
             </Comment>

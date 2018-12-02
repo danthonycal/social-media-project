@@ -1,7 +1,10 @@
-import _ from 'lodash'
-import React, { Component } from 'react'
-import { Search, Grid, Header, Segment } from 'semantic-ui-react'
-import local_storage from localStorage;
+/* eslint-disable no-unused-vars */
+import _ from 'lodash';
+import React, { Component } from 'react';
+import autobind from 'react-autobind';
+import axios from 'axios';
+import { Search, Grid, Header, Segment, Label } from 'semantic-ui-react';
+import local_storage from 'localStorage';
 
 export default class SearchUser extends Component {
     constructor(props) {
@@ -28,7 +31,9 @@ export default class SearchUser extends Component {
     }
     resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
 
-    handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+    handleResultSelect = (e, { result }) => {
+        window.location = "/user/" + result.username
+    }
 
     handleSearchChange = (e, { value }) => {
         this.setState({ isLoading: true, value })
@@ -49,7 +54,6 @@ export default class SearchUser extends Component {
                     res.push(this.state.data[i]);  // push the matched results to the previously declared container
                 }
             }
-
             this.setState({
                 isLoading: false,
                 results : res        // set the results to the container
@@ -57,19 +61,21 @@ export default class SearchUser extends Component {
             }
         }, 300)
     }
+    resultRenderer = ({ username }) => <Label> {username} </Label>
 
-  render() {
-    const { isLoading, value, results } = this.state
-
-    return (
-        <Search
-        loading={isLoading}
-        onResultSelect={this.handleResultSelect}
-        onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-        results={results}
-        value={value}
-        {...this.props}
-        />
-    )
-  }
+    render() {
+        return (
+            <Search
+                loading = {this.state.isLoading}
+                onSearchChange = {this.handleSearchChange}
+                onResultSelect = {this.handleResultSelect}
+                results = {this.state.results}
+                value = {this.state.value}
+                resultRenderer = {this.resultRenderer}
+                placeholder = 'Search User'
+                aligned = 'right'
+                fluid
+            />
+        )
+    }
 }

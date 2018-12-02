@@ -148,7 +148,7 @@ export default class PostFeed extends Component {
 			<Grid>
 				<Grid.Column width={1}></Grid.Column>
 				<Grid.Column width={16}>
-					<Feed divided>
+					<Feed>
 						<CreatePostForm getPosts={this.props.getPosts} userData={this.state}/>
 						<br />
 						{

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import local_storage from 'localStorage';
 import { Button,  Container, Checkbox, Dropdown, Header, Icon, Menu,  Segment, Image, Sticky, Rail} from 'semantic-ui-react'
+import SearchUser from './SearchUser';
 
 const menuStyle = {
   borderRadius: 0,
@@ -47,20 +48,13 @@ class Nav extends Component {
                 </Dropdown.Item>
                 <Dropdown.Item>List Item</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Header>Header Item</Dropdown.Header>
-                <Dropdown.Item>
-                  <i className='dropdown icon' />
-                  <span className='text'>Submenu</span>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>List Item</Dropdown.Item>
-                    <Dropdown.Item>List Item</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <Menu.Item as='a' header name='home' active={activeItem === 'home'} onClick={this.handleItemClick}>
               Home
+            </Menu.Item>
+            <Menu.Item>
+              <SearchUser />
             </Menu.Item>
           </Container>
         </Menu>
