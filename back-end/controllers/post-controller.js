@@ -1,6 +1,6 @@
 'use strict';
-const Post = require('mongoose').model('Post');
-const User = require('mongoose').model('User');
+const Post   = require('mongoose').model('Post');
+const User   = require('mongoose').model('User');
 var ObjectId = require('mongodb').ObjectID;
 // add post on own wall
 exports.add_post_own_wall = (req, res) => {

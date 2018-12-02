@@ -1,10 +1,13 @@
-const router = require('express').Router();
 const CommentController = require('../controllers/comment-controller');
-const PostController = require('../controllers/post-controller');
-const UserController = require('../controllers/user-controller');
+const PostController    = require('../controllers/post-controller');
+const UserController    = require('../controllers/user-controller');
+const router            = require('express').Router();
 
 
 /* comment controllers */
+router.get('/get-comments/:_id', CommentController.get_comments);
+router.post('/add-comment', CommentController.add_comment);
+router.delete('/delete-comment/:_id', CommentController.delete_comment);
 
 /* post controllers */
 router.get('/get-posts', PostController.get_all_posts);

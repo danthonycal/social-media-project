@@ -48,7 +48,6 @@ export default class LoginForm extends Component {
   }
 
   handleSubmit = (e) => {
-    // e.preventDefault()
     console.log("Logging in...");
     const {email, password} = this.state;
     axios.post("/app/login", {
@@ -56,7 +55,16 @@ export default class LoginForm extends Component {
       password: password,
     })
     .then(function (response) {
-      if (response.status === 200 && response.data.length!==0) {     
+      if (response.status === 200){
+        if (response.data === "invalid") {
+          swal("Login failed!", "Invalid password. Try again.","error", {
+            buttons:  "Okay"
+          }).then(function () {          
+            console.log("Invalid password!")
+            window.location = "/login"
+          });
+        }
+        else {     
           swal("Success!", "Successfully logged in!", "success", {
             button: "Okay"
           }).then(function () {
@@ -76,14 +84,7 @@ export default class LoginForm extends Component {
             local_storage.setItem("userData", JSON.stringify(userData));
             window.location = "/home";
           });
-      } else if (response.status === 403) {
-          swal("Login failed!", "Invalid password. Try again.","error", {
-            buttons:  "Okay"
-          }).then(function () {          
-            console.log("Invalid password!")
-            window.location = "/login"
-          });
-        
+        }
       } else {
         window.alert("Something went wrong. Try again.")
         window.location = "/login"

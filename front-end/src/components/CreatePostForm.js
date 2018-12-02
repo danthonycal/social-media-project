@@ -15,7 +15,6 @@ const DashboardStyle = {
     paddingBottom: '10px',
     marginTop: '-10px',
 }
-
 export default class CreatePostForm extends Component {
     constructor(props) {
         super(props);
@@ -30,11 +29,9 @@ export default class CreatePostForm extends Component {
             comments    : [],
         }
     }
-
     handleStatusChange = (e) => {
-        this.setState( {content : e.target.value} );
+        this.setState({content : e.target.value});
     }
-    
     handleClick = (e) => {
         axios.post('/app/add-posts', {
             authorId   : this.state.authorId,
@@ -48,24 +45,22 @@ export default class CreatePostForm extends Component {
         .then(function(response) {
             swal("Added post!", "nice!","success", {
                 button : "oks"
-            })
+            });
         })
         this.setState({
             content: ''
-        })
-        this.props.getPosts()
+        });
+        this.props.getPosts();
     }
     componentWillMount() {
         const user = JSON.parse(local_storage.getItem("userData"));
-        console.log(user);
         this.setState({
             authorId   : user._id,
             wallId     : user.wallId,
             authorName : user.name,
             wallOwner  : user.name,
-        })
+        });
     }
-
     render() {
         return(
             <div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import _ from 'lodash';
 import autobind from 'react-autobind';
 import React, { Component } from 'react';
@@ -6,6 +7,7 @@ import axios from 'axios';
 import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import CreatePostForm from './CreatePostForm';
+import Comments from './Comments';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
@@ -63,17 +65,7 @@ class Post extends Component {
         });
         this.props.getPosts();
     }
-    getComments(){
-        axios.get("/app/get-comments")
-        .then((response) => {
-            this.setState({
-                comments: response.data
-            })
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }
+    
     componentWillMount(){
         this.setState({
             _id        : this.props.postData._id,
@@ -99,8 +91,8 @@ class Post extends Component {
 						{this.state.content}
 					</Feed.Extra>
 					<Feed.Meta>
-						<Button icon='trash' onClick={() => this.handleDeletePost(this.state._id)} />
-						<Modal trigger={<Button icon='edit' />} style={UpdateModalStyle} closeIcon>
+						<Button size='mini' content='Delete post' icon='trash' onClick={() => this.handleDeletePost(this.state._id)} />
+						<Modal trigger={<Button size='mini' content='Edit post' icon='edit' />} style={UpdateModalStyle} closeIcon>
 							<Header icon='edit' content='Edit Post' />
 							<Modal.Content>
 								<Form>
@@ -108,17 +100,15 @@ class Post extends Component {
 								</Form>
 							</Modal.Content>
 							<Modal.Actions>
-							<Button color='red'>
-								<Icon name='remove' /> Cancel
-							</Button>
-							<Button color='green'  onClick = {() => this.handleUpdate(this.state._id)} >
-								<Icon name='checkmark' /> Update
-							</Button>
+                                <Button size='mini' color='red' content='Cancel' icon='remove' />
+                                <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
 							</Modal.Actions>
-                            <Comments comments={this.state.comments} getComments={this.getComments} userData={this.state} />
 						</Modal>
 
 					</Feed.Meta>
+                    <Feed.Extra>
+                        <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
+                    </Feed.Extra>
 				</Feed.Content>
             </Feed.Event>
         )
@@ -158,13 +148,13 @@ export default class PostFeed extends Component {
 			<Grid>
 				<Grid.Column width={1}></Grid.Column>
 				<Grid.Column width={16}>
-					<Feed>
+					<Feed divided>
 						<CreatePostForm getPosts={this.props.getPosts} userData={this.state}/>
 						<br />
 						{
 							posts.reverse().map((post) => {
 								return(
-									<Post key={this.state._id} postData={post} getPosts={this.props.getPosts} userData={this.state}/>
+									<Post key={post._id} postData={post} getPosts={this.props.getPosts} userData={this.state}/>
 								)
 							})
 						}
