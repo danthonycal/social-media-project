@@ -22,10 +22,12 @@ class Profile extends Component {
         this.state = {
     		_id : '',
             username: '',
+            email : '',
         	open : false
         }
     	// this.handleClose = this.handleClose.bind(this)
-        // this.handleUsernameChange = this.handleUsernameChange.bind(this)
+        this.handleUsernameChange = this.handleUsernameChange.bind(this)
+        this.handleEmailChange = this.handleEmailChange.bind(this)
     }	
 
     handleClose = () => this.setState({ open: false })
@@ -46,13 +48,6 @@ class Profile extends Component {
         });
     }
 
-    componentWillMount(){
-        this.setState({
-            _id        : this.props.userData._id,
-            username   : this.props.userData.username
-        });
-    }
-
 	render() {
 
 		const inlineStyle = {
@@ -69,7 +64,7 @@ class Profile extends Component {
 					<Icon name='users' circular />
 					<Header.Content>{this.state.username}</Header.Content>
 				</Header>
-				Email : {this.state.email}
+				Email : {this.state.email} <br />
 				<Modal style={inlineStyle.modal} size='mini' trigger = { <Button icon='edit' size='mini' data-tooltip="Edit username" /> }>
 					<Modal.Header>
 						Edit Username or Email
@@ -79,12 +74,14 @@ class Profile extends Component {
 							<Form.Input
 								fluid
 								value={this.state.newUsername}
+								placeholder = 'New username'
 								onChange = {this.handleUsernameChange}
 							>
 							</Form.Input>
 							<Form.Input
 								fluid
-								placeholder={this.state.email}
+								value={this.state.newEmail}
+								placeholder = 'New email address'
 								onChange = {this.handleEmailChange}
 							>
 							</Form.Input>
@@ -124,28 +121,11 @@ export default class UserProfile extends Component {
         };
 
         // this.close = this.close.bind(this)
-        // this.handleNameChange = this.handleNameChange.bind(this)
-        // this.handleBdayChange = this.handleBdayChange.bind(this)
- 		// this.handleEditProfile  =  this.handleEditProfile.bind(this)
-   //   	this.getProfile = this.getProfile.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleBdayChange = this.handleBdayChange.bind(this)
+ 		this.handleEditProfile  =  this.handleEditProfile.bind(this)
+     	this.getProfile = this.getProfile.bind(this)
      }
-
-	getProfile(ID) {
-		axios.get('/app/get-user-by-id/'+ID, {
-			params : {
-				_id: ID
-			}
-		})
-		.then((response) => {
-			this.setState({
-				_id : response.data._id,
-				username : response.data.username,
-				name : response.data.name,
-				email : response.data.email,
-				bday : response.data.birthday
-			})
-		});
-	}
 
 	getProfile() {
 		let user = JSON.parse(local_storage.getItem("userData"));
@@ -194,7 +174,7 @@ export default class UserProfile extends Component {
 	                button : "Okay"
 	            }).then(function() {
 					let newUserData = {
-						id		 : this.state._id,
+						_id		 : this.state._id,
               			wallId	 : this.state._id,
 						username : this.newUsername,
 						name	 : this.newName,
@@ -208,7 +188,7 @@ export default class UserProfile extends Component {
 					local_storage.setItem("userData", JSON.stringify(newUserData));
 					console.log("Profile updated.")
 					this.getProfile();
-	            	// window.location = '/profile'
+	            	window.location = '/profile'
 	            })
 	    	} else {
 				swal("Error!", "Something went wrong.", "error", {
@@ -244,7 +224,7 @@ export default class UserProfile extends Component {
 		    about:    user.about,
 		    friends:  user.friends
 		  })
-		//   this.getProfile();
+		  this.getProfile();
 		}
 	}
 
