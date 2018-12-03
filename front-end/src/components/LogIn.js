@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import autobind from 'react-autobind';
 import React, { Component } from 'react';
-import { Header, Button, Grid, Form, Segment, Message, Menu } from 'semantic-ui-react';
+import { Header, Button, Grid, Form, Segment, Message, Menu, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from './Footer';
@@ -17,7 +17,7 @@ const menuStyle = {
 
 const NavBarHomePage = () => (
   <Menu secondary size = 'large' style = {menuStyle}>
-    <Menu.Item as = {Link} to = '#'>Logo</Menu.Item>
+    <Menu.Item as = {Link} to = '#'><Icon disabled name='users' size='big' /></Menu.Item>
   </Menu>
 )
 
@@ -61,7 +61,7 @@ export default class LoginForm extends Component {
             buttons:  "Okay"
           }).then(function () {          
             console.log("Invalid username/password!")
-            window.location = "/login"
+            // window.location = "/login"
           });
         }
         else {     
@@ -87,11 +87,11 @@ export default class LoginForm extends Component {
         }
       } else {
         window.alert("Something went wrong. Try again.")
-        window.location = "/login"
+        // window.location = "/login"
       } 
     })
     .catch(function(error) {
-        window.location = "/login"
+        // window.location = "/login"
         console.log("error")
     })
   }
@@ -113,7 +113,7 @@ export default class LoginForm extends Component {
           verticalAlign='middle'
         >
           <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as='h2' color='teal' textAlign='center'>
+            <Header as='h2' color='black' textAlign='center'>
               Log-in to your account
             </Header>
             <Form size='large'>
@@ -135,7 +135,7 @@ export default class LoginForm extends Component {
                   value = {this.state.password}
                   onChange = {this.handlePasswordChange}
                 />
-                <Button color='teal' fluid size='large' onClick = {this.handleSubmit}>Login</Button>
+                <Button color='black' fluid size='large' onClick = {this.handleSubmit}>Login</Button>
               </Segment>
             </Form>
             <Message>

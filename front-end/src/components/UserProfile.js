@@ -46,13 +46,6 @@ class Profile extends Component {
         });
     }
 
-    componentWillMount(){
-        this.setState({
-            _id        : this.props.userData._id,
-            username   : this.props.userData.username
-        });
-    }
-
 	render() {
 
 		const inlineStyle = {
@@ -129,23 +122,6 @@ export default class UserProfile extends Component {
  		// this.handleEditProfile  =  this.handleEditProfile.bind(this)
    //   	this.getProfile = this.getProfile.bind(this)
      }
-
-	getProfile(ID) {
-		axios.get('/app/get-user-by-id/'+ID, {
-			params : {
-				_id: ID
-			}
-		})
-		.then((response) => {
-			this.setState({
-				_id : response.data._id,
-				username : response.data.username,
-				name : response.data.name,
-				email : response.data.email,
-				bday : response.data.birthday
-			})
-		});
-	}
 
 	getProfile() {
 		let user = JSON.parse(local_storage.getItem("userData"));

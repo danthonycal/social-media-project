@@ -14,18 +14,18 @@ const menuStyle = {
   borderRadius: 0,
   boxShadow: 'none',
   background: 'inherit',
+  backgroundColor : 'black',
   padding: '10px',
 }
 const NavBarHomePage = () => (
   <Menu secondary size = 'large' style = {menuStyle}>
-    <Menu.Item as = {Link} to = '#'>Logo</Menu.Item>
+    <Menu.Item as = {Link} to = '#'><Icon disabled name='users' size='big' /></Menu.Item>
   </Menu>
 )
 
 const Section1 = () => (
   <div>
-    <Segment inverted style={{ height: '600px',padding: '1em', backgroundColor: '#7abbff'}} vertical>
-      <p>Hey</p>
+    <Segment inverted style={{ height: '600px',padding: '1em', backgroundColor: '#f9fcff'}} vertical>
     </Segment>
   </div>
 )
@@ -33,19 +33,19 @@ const Section1 = () => (
 const SubsectionStyle = {
   margin : '10px',
   height: '500px',
-  backgroundColor : '#edf6ff',
+  backgroundColor : '#f9fcff',
   border : 'none'
 }
 
 const SignUp = ({state}) => (
   <div>
     <Segment textAlign = 'center' style={{ height: '600px',padding: '1em 3em 0em 3em', backgroundColor : '#f9fcff'}} vertical>
-      <Header as = 'h1' content = "Logo" style = {{padding: '3px'}}/>
+      <Header as = 'h1' content = "AntiSocial" style = {{padding: '3px'}}/>
       <Segment textAlign = 'center' style = {SubsectionStyle}>
         <Divider horizontal/>
         <Grid verticalAlign = 'middle' textAlign='center'>
           <Grid.Column style={{ maxWidth: 400 }}>
-            <Button as={Link} to = '/login' fluid color = 'teal' >Log in</Button>
+            <Button as={Link} to = '/login' fluid color = 'black' >Log in</Button>
             <Divider horizontal>Or</Divider>
             <Form error = {state.state.form_error}>
               <Form.Input
@@ -89,7 +89,7 @@ const SignUp = ({state}) => (
                 onChange    = {state.handleBdayChange}
 
               />
-              <Form.Button fluid color = 'teal' onClick = {state.handleClick}>Sign Up</Form.Button>
+              <Form.Button fluid color = 'white' onClick = {state.handleClick}>Sign Up</Form.Button>
             </Form>
             <Message>
               By signing up, you agree to our <strong>Terms and Conditions</strong>.

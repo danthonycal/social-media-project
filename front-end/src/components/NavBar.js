@@ -46,8 +46,8 @@ class Nav extends Component {
         <Menu fixed='top' className='right menu' inverted>
           <Container>
             <Menu.Item as='a' header>
-              <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
-              Project Name
+              <Icon disabled name='users' size='big' />
+              AntiSocial
             </Menu.Item>
             <Menu.Menu position='right'>
               <Menu.Item>
@@ -56,14 +56,9 @@ class Nav extends Component {
               <Menu.Item as='a' header name='home' active={activeItem === 'home'} onClick={this.handleItemClick}>
                 Home
               </Menu.Item>
-              <Dropdown item simple text='Dropdown'>
-                <Dropdown.Menu >
-                  <Dropdown.Item name='account' active={activeItem === 'account'} onClick={this.handleItemClick}>
-                      <Icon name='vcard' />View Profile
-                  </Dropdown.Item>
-                  <Dropdown.Item>List Item</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <Menu.Item as='a' header name='account' active={activeItem === 'account'} onClick={this.handleItemClick}>
+                  <Icon name='vcard' />View Profile
+              </Menu.Item>
               <Menu.Item as='a' onClick={this.handleLogout}>
                 Logout
               </Menu.Item>

@@ -14,9 +14,6 @@ import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
 
-// const date = '3 days ago'
-
-
 export default class SearchedUserProfile extends Component {
     constructor(props) {
         super(props);
@@ -35,8 +32,8 @@ export default class SearchedUserProfile extends Component {
         }
     }
     getPosts(){
-        console.log(this.state.wallId)
-        axios.get("/app/get-posts/"+this.state.wallId)
+        const selectedUser =JSON.parse(local_storage.getItem("SelectedUser"));
+        axios.get("/app/get-posts")
         .then((response) => {
             this.setState({
                 posts: response.data
@@ -44,7 +41,7 @@ export default class SearchedUserProfile extends Component {
         })
         .catch((error) => {
             console.log(error);
-            // window.location.reload();
+            alert(error);
         });
         this.render();
     }

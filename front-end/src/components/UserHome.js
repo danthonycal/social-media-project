@@ -13,9 +13,6 @@ import 'semantic-ui-css/semantic.min.css';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
-// const date = '3 days ago'
-
-
 
 export default class UserHome extends Component {
     constructor(props) {
@@ -43,7 +40,7 @@ export default class UserHome extends Component {
         })
         .catch((error) => {
             console.log(error);
-            // window.location.reload();
+            alert(error);
         });
         this.render();
     }

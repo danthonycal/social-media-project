@@ -61,11 +61,13 @@ exports.get_all_posts = (req, res) => {
 
 exports.get_posts_by_id = (req, res) => {
     const _id = new ObjectId(req.params._id)
-    Post.find({ "_id": _id }, (err, posts)=> {
+    console.log(_id)
+    Post.find({ "authorId": _id }, (err, posts)=> {
         if(err){
             console.log(err);
             res.status(500).send(false);
         } else {
+            console.log(posts);
             res.status(200).send(posts);
         }
     });

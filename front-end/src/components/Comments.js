@@ -49,6 +49,7 @@ class SingleComment extends Component {
             content: ''
         })
         this.props.getComments(this.props.commentData._id);
+        window.location.reload()
     }
     handleDeleteComment = (e) => {
         axios.delete('/app/delete-comment/'+this.state._id, {
@@ -61,6 +62,7 @@ class SingleComment extends Component {
         });
         this.props.getComments(this.props.commentData._id);
         this.render();
+        window.location.reload();
     }
     componentWillMount() {
         this.setState({
@@ -158,11 +160,13 @@ export default class Comments extends Component {
         this.setState({
             content: ''
         });
-        this.componentWillMount();
-    }
+        this.getComments(this.props.userData._id)
+        window.location.reload();
+    } 
     componentWillMount(){
         const loggedUser = JSON.parse(local_storage.getItem("userData"));
         this.setState({
+            authorId   : loggedUser._id,
             authorName : loggedUser.name,
             postId     : this.props.userData._id,
             postOwner  : this.props.userData.name,

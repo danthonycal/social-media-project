@@ -48,6 +48,8 @@ class Post extends Component {
         .then(function(response) {
             swal("Updated post!", "nice!","success", {
                 button : "oks"
+            }).then(function() {
+                
             })
         })
         this.setState({
@@ -55,6 +57,7 @@ class Post extends Component {
         })
         // this.props.getPosts();
         this.render();
+        window.location.reload();
     }
     handleDeletePost = (_id, e) => {
         axios.delete('/app/delete-post/'+_id, {
@@ -105,25 +108,7 @@ class Post extends Component {
                     <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
                 </Card.Content>
             </Card>
-            // <Feed.Event>
-			// 	<Feed.Label image={ Laura } />
-			// 	<Feed.Content>
-			// 		<Feed.Summary>
-			// 			{this.state.authorName} 
-			// 			<Feed.Date>{this.state.timestamp} | {this.state.wallOwner}'s wall</Feed.Date>
-			// 		</Feed.Summary>
-			// 		<Feed.Extra text>
-			// 			{this.state.content}
-			// 		</Feed.Extra>
-			// 		<Feed.Meta>
-						
-
-			// 		</Feed.Meta>
-            //         <Feed.Extra>
-            //             <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
-            //         </Feed.Extra>
-			// 	</Feed.Content>
-            // </Feed.Event>
+            
         )
     } 
 }

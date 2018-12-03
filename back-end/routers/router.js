@@ -13,7 +13,7 @@ router.delete('/delete-comment/:_id', CommentController.delete_comment);
 
 /* post controllers */
 router.get('/get-posts', PostController.get_all_posts);
-router.get('/get-posts/:_id', PostController.get_posts_by_id);
+router.get('/get-posts-user/:_id', PostController.get_posts_by_id);
 router.post('/add-posts', PostController.add_post_own_wall);
 router.post('/edit-post/:_id', PostController.edit_post);
 router.delete('/delete-post/:_id', PostController.delete_post);

@@ -50,7 +50,7 @@ export default class CreatePostForm extends Component {
         this.setState({
             content: ''
         });
-        // this.props.getPosts();
+        this.props.getPosts();
         this.render();
         window.location.reload();
     }

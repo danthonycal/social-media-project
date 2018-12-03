@@ -41,7 +41,7 @@ export default class ProfileCard extends Component {
                         <p>{this.props.userData.birthday}</p>
                         </Card.Meta>
                         <Card.Description textAlign = 'center'>
-                        <p>Friend: </p>
+                        {/* <p>Friend: </p> */}
                         
                         </Card.Description>
                     </Card.Content>
