@@ -29,15 +29,38 @@ class SingleComment extends Component {
             timestamp   : new Date()
         }
     }
-    handleDeleteComment = (_id, e) => {
-        axios.delete('/app/delete-comment/'+_id, {
+    handleCommentEdit = (e) => {
+        this.setState({content: e.target.value});
+    }
+    handleUpdate = (_id, e) => {
+        axios.post('/app/edit-comment/'+_id, {
             params: {
-                _id: _id,
+                _id        : _id,
+                postId     : this.props.postId,
+                newContent : this.state.content
+            }
+        })
+        .then(function(response) {
+            swal("Updated post!", "nice!","success", {
+                button : "oks"
+            })
+        })
+        this.setState({
+            content: ''
+        })
+        this.props.getComments(this.props.commentData._id);
+    }
+    handleDeleteComment = (e) => {
+        axios.delete('/app/delete-comment/'+this.state._id, {
+            params: {
+                _id    : this.state._id,
+                postId : this.state.postId
             }
         }).catch((error) => {
             console.log(error);
         });
-        this.props.getPosts();
+        this.props.getComments(this.props.commentData._id);
+        this.render();
     }
     componentWillMount() {
         this.setState({
@@ -61,19 +84,24 @@ class SingleComment extends Component {
                     </Comment.Metadata>
                     <Comment.Text>{this.state.content}</Comment.Text>
                     <Comment.Actions>
-                        <Button size='mini' icon='remove' onClick={() => this.handleDeleteComment(this.state._id)} />
-						<Modal trigger={<Button size='mini' icon='edit' />} style={UpdateModalStyle} closeIcon>
-							<Header icon='edit' content='Edit Comment' />
-							<Modal.Content>
-								<Form>
-									<TextArea placeholder='Update comment' value = {this.state.content} onChange={this.handleStatusEdit} rows={2} style={{minHeight: 70}} />
-								</Form>
-							</Modal.Content>
-							<Modal.Actions>
-                                <Button size='mini' color='red' content='Cancel' icon='remove' />
-                                <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
-							</Modal.Actions>
-						</Modal>
+                        <Comment.Action onClick={() => this.handleDeleteComment()}>
+                            delete
+                        </Comment.Action>
+                        <Comment.Action>
+                            <Modal trigger={<a>edit</a>} style={UpdateModalStyle} closeIcon>
+                                <Header icon='edit' content='Edit Comment' />
+                                <Modal.Content>
+                                    <Form>
+                                        <TextArea placeholder='Update comment' value = {this.state.content} onChange={this.handleCommentEdit} rows={2} style={{minHeight: 70}} />
+                                    </Form>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                    <Button size='mini' color='red' content='Cancel' icon='remove' />
+                                    <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
+                                </Modal.Actions>
+                            </Modal>
+                        </Comment.Action>
+                        {/* <Button size='mini' icon='remove'  /> */}
                     </Comment.Actions>
                 </Comment.Content>
             </Comment>
@@ -130,7 +158,7 @@ export default class Comments extends Component {
         this.setState({
             content: ''
         });
-        this.getComments(this.props.userData._id);
+        this.componentWillMount();
     }
     componentWillMount(){
         const loggedUser = JSON.parse(local_storage.getItem("userData"));
@@ -141,6 +169,7 @@ export default class Comments extends Component {
             postOwner  : this.props.userData.name,
             timestamp  : this.props.userData.timestamp 
         });
+        // this.props.getPost();
         this.getComments(this.props.userData._id)
     }
     render() {
@@ -148,14 +177,14 @@ export default class Comments extends Component {
         const collapsed = this.state.collapsed;
 
         return (
-            <Comment.Group minimal>
+            <Comment.Group>
                 <Header as='h3' dividing>
                     Comments
                 </Header>
                 {
                     comments.reverse().map((comment)=>{
                         return(
-                            <SingleComment key={comment._id} commentData={comment} userData={this.state} />
+                            <SingleComment key={comment._id} getComments={this.getComments} commentData={comment} userData={this.state} />
                         ) 
                     })
                 }

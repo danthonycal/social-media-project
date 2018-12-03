@@ -18,27 +18,27 @@ class Profile extends Component {
 
     constructor(props) {
         super(props);
-
         autobind(this);	
         this.state = {
-        	profile : {
-	            // email:    '',
-	            // name:     '',
-	            username: '',
-	            // bday:     '',
-	            // about:    '',
-	            // friends:  [],   
-	            // posts:    [],
-        	}
+    		_id : '',
+            username: '',
+        	open : false
         }
-    	this.close = this.close.bind(this)
-        this.handleUsernameChange = this.handleUsernameChange.bind(this)
+    	// this.handleClose = this.handleClose.bind(this)
+        // this.handleUsernameChange = this.handleUsernameChange.bind(this)
     }	
 
-    close = () => this.setState({ open: false })
+    handleClose = () => this.setState({ open: false })
 
     handleUsernameChange = (e) => {
     	this.setState({ username : e.target.value })
+    }
+
+    componentWillMount(){
+        this.setState({
+            _id        : this.props.userData._id,
+            username   : this.props.userData.username
+        });
     }
 
 	render() {
@@ -55,7 +55,7 @@ class Profile extends Component {
 			<div>
 				<Header as='h2' icon textAlign='center'>
 					<Icon name='users' circular />
-					<Header.Content>{this.props.userData.username}</Header.Content>
+					<Header.Content>{this.state.username}</Header.Content>
 				</Header>
 				<Modal style={inlineStyle.modal} size='mini' trigger = { <Button icon='edit' size='mini' data-tooltip="Edit username" /> }>
 					<Modal.Header>
@@ -65,7 +65,7 @@ class Profile extends Component {
 						<Form>
 							<Form.Input
 								fluid
-								placeholder={this.props.userData.username}
+								value={this.state.newUsername}
 								onChange = {this.handleUsernameChange}
 							>
 							</Form.Input>
@@ -73,11 +73,11 @@ class Profile extends Component {
 					</Modal.Content>
 					<Modal.Actions>
 						<Button.Group>
-							<Button negative onClick= { this.close } >Cancel</Button>
+							<Button negative onClick={ this.handleClose } >Cancel</Button>
 							<Button.Or />
-							<Button positive>Save</Button>
+							<Button positive onClick = { this.props.handleEditProfile } >Save</Button>
 						</Button.Group>
-					</Modal.Actions>
+					 </Modal.Actions>
 				</Modal>
 			</div>
 		)
@@ -88,34 +88,110 @@ export default class UserProfile extends Component {
 
     constructor(props) {
         super(props);
-
+        autobind(this);
         this.state = {
-        	profile : {
-	            email:    '',
-	            name:     '',
-	            username: '',
-	            bday:     '',
-	            about:    '',
-	            friends:  [],   
-	            // posts:    [],
-        	},
-        	open : false
+			_id 	 	: '',
+			email	 	: '',
+			newEmail 	: '',
+			name	 	: '',
+			newName  	: '',
+			username 	: '',
+			newUsername : '',
+			bday	 	: '',
+			newBday  	: '',
+			about		: '',
+			newAbout	: '',
+        	open 	 	: false
         };
 
-        this.close = this.close.bind(this)
-        this.handleNameChange = this.handleNameChange.bind(this)
-        this.handleBdayChange = this.handleBdayChange.bind(this)
-    }
+        // this.close = this.close.bind(this)
+        // this.handleNameChange = this.handleNameChange.bind(this)
+        // this.handleBdayChange = this.handleBdayChange.bind(this)
+ 		// this.handleEditProfile  =  this.handleEditProfile.bind(this)
+   //   	this.getProfile = this.getProfile.bind(this)
+     }
+
+	getProfile() {
+		let user = JSON.parse(local_storage.getItem("userData"));
+		console.log(user._id);
+		axios.get('/app/get-user-by-id/'+user._id, {
+			params : {
+				_id : user._id,
+			}
+		})
+		.then((response) => {
+			this.setState({
+				username : response.data.username,
+				name     : response.data.name,
+				email    : response.data.email,
+				bday	 : response.data.birthday,
+				about	 : response.data.about
+			})
+		});
+	}
 
     close = () => this.setState({ open: false })
-
     handleNameChange = (e) => {
-    	this.setState({ name : e.target.value })
+    	this.setState({ newName : e.target.value })
     }
 
     handleBdayChange = (e) => {
-    	this.setState({ bday : e.target.value })
-    }
+    	this.setState({ newBday : e.target.value })
+     }
+
+	handleEditProfile  = (e) => { 
+		console.log("Saving changes...")
+		console.log("state:"+JSON.stringify(this.state))
+		axios.post('/app/edit-profile/'+this.state._id, {
+			params: {
+				_id         : this.state._id,
+				newUsername : this.state.newUsername,
+				newName 	: this.state.newName,
+				newBday 	: this.state.newBday,
+				newEmail	: this.state.newEmail,
+				newAbout 	: this.state.newAbout
+			}
+		})
+	    .then(function(response) {
+	    	if (response.data === true) {    		
+	            swal("Success!", "Profile updated","success", {
+	                button : "Okay"
+	            }).then(function() {
+					let newUserData = {
+						id		 : this.state._id,
+              			wallId	 : this.state._id,
+						username : this.newUsername,
+						name	 : this.newName,
+						birthday : this.newBday,
+						email	 : this.newEmail,
+						password : this.state.password,
+						about	 : this.newAbout,
+						friends	 : this.friends
+					}
+					console.log(newUserData)
+					local_storage.setItem("userData", JSON.stringify(newUserData));
+					console.log("Profile updated.")
+					this.getProfile();
+	            	// window.location = '/profile'
+	            })
+	    	} else {
+				swal("Error!", "Something went wrong.", "error", {
+					Button: "Okay"
+				}).then(function () {
+					console.log("Something went wrong.")
+				});      		
+	    	}
+	    })
+	    this.setState({
+	        newUsername : this.state.username,
+	        newName		: this.state.name,
+	        newBday		: this.state.bday,
+			newEmail	: this.state.email,
+			newAbout	: this.state.about
+	    })
+	    this.getProfile()
+	}
+
 
 	componentWillMount() {
 		if(local_storage.getItem("loggedIn")!=="true") {
@@ -123,7 +199,7 @@ export default class UserProfile extends Component {
 		} else {
 		  const user = JSON.parse(local_storage.getItem("userData"))
 		  this.setState({
-		    _id: user._id,
+		    _id:      user._id,
 		    email:    user.email,
 		    name:     user.name,
 		    username: user.username,
@@ -132,12 +208,13 @@ export default class UserProfile extends Component {
 		    about:    user.about,
 		    friends:  user.friends
 		  })
+		//   this.getProfile();
 		}
 	}
 
 
 	render() {
-	
+		console.log("state:"+JSON.stringify(this.state));
 		const inlineStyle = {
 			modal : {
 			marginTop: '0px !important',
@@ -153,7 +230,7 @@ export default class UserProfile extends Component {
 					<Grid celled>
 						<Grid.Row>
 							<Grid.Column width={3}>
-								<Profile userData = {this.state} />
+								<Profile userData = {this.state} handleEditProfile = { this.handleEditProfile } getProfile = { this.getProfile } />
 							</Grid.Column>
 							<Grid.Column width={13}>
 								<Button><Icon name='user plus' />Add as friend</Button>
@@ -171,7 +248,7 @@ export default class UserProfile extends Component {
 									<Modal.Content>
 										<Form>
 											<Form.Field>
-												<input placeholder={this.state.name} />
+												<input value={this.state.newName} onChange={ this.handleNameChange }/>
 											</Form.Field>
 										</Form>
 									</Modal.Content>
@@ -179,7 +256,7 @@ export default class UserProfile extends Component {
 										<Button.Group>
 											<Button negative >Cancel</Button>
 											<Button.Or />
-											<Button positive>Save</Button>
+											<Button positive onClick = {this.handleEditProfile}>Save</Button>
 										</Button.Group>
 									</Modal.Actions>
 								</Modal>
@@ -191,6 +268,8 @@ export default class UserProfile extends Component {
 									</Modal.Header>
 									<Modal.Content>
 										<Form.Input
+											value={this.state.newBday}
+											onChange={this.handleBdayChange}
 											fluid
 											type = 'date'
 										/>
@@ -199,7 +278,7 @@ export default class UserProfile extends Component {
 										<Button.Group>
 											<Button negative onClose={this.close}>Cancel</Button>
 											<Button.Or />
-											<Button positive>Save</Button>
+											<Button positive onClick = { this.handleEditProfile }>Save</Button>
 										</Button.Group>
 									</Modal.Actions>
 								</Modal>

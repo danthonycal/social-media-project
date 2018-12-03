@@ -13,11 +13,11 @@ import 'semantic-ui-css/semantic.min.css';
 import Laura from '../assets/img/avatar/laura-large.jpg';
 import local_storage from 'localStorage';
 import swal from 'sweetalert2';
+
 // const date = '3 days ago'
 
 
-
-export default class UserHome extends Component {
+export default class SearchedUserProfile extends Component {
     constructor(props) {
         super(props);
         autobind(this);
@@ -28,14 +28,15 @@ export default class UserHome extends Component {
             name     : '',
             username : '',
             password : '',
-            birthday : '',
+            bday     : '',
             about    : '',
             friends  : [],   
             posts    : []
         }
     }
     getPosts(){
-        axios.get("/app/get-posts")
+        console.log(this.state.wallId)
+        axios.get("/app/get-posts/"+this.state.wallId)
         .then((response) => {
             this.setState({
                 posts: response.data
@@ -52,34 +53,39 @@ export default class UserHome extends Component {
         if(local_storage.getItem("loggedIn")!=="true"){
             window.location = "/";
         } else {
-            const user = JSON.parse(local_storage.getItem("userData"))
-            this.setState({
-                _id      : user._id,
-                wallId   : user.wallId,
-                email    : user.email,
-                name     : user.name,
-                username : user.username,
-                password : user.password,
-                birthday : user.birthday,
-                about    : user.about,
-                friends  : user.friends
-            })
-            this.getPosts();
+            console.log(this.props.match.params.username)
+            axios.get("/app/find-by-username/"+this.props.match.params.username)
+            .then(function(response) {
+                local_storage.setItem("SelectedUser",JSON.stringify(response.data));
+                const selectedUser = JSON.parse(local_storage.getItem("SelectedUser"));
+                this.setState({
+                    wallId   : selectedUser._id,
+                    _id      : selectedUser._id,
+                    email    : selectedUser.email,
+                    name     : selectedUser.name,
+                    username : selectedUser.username,
+                    password : selectedUser.password,
+                    bday     : selectedUser.birthday,
+                    about    : selectedUser.about,
+                    friends  : selectedUser.friends
+                })
+            });
         }
+        this.getPosts();
     }
     render() {
-        console.log(this.state)
+        const selectedUser = JSON.parse(local_storage.getItem("SelectedUser"));
         return(
             <div>
                 <NavBar />
                 <Grid centered columns={1}>
                     <Grid.Column width={1} ></Grid.Column>
                     <Grid.Column width={3} >
-                        <ProfileCard userData={this.state}/>
+                        <ProfileCard userData={selectedUser}/>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Container text style={{ marginTop: '6em' }}>
-                            <PostFeed posts={this.state.posts} getPosts={this.getPosts} userData={this.state}/>
+                            <PostFeed posts={this.state.posts} getPosts={this.getPosts} userData={selectedUser}/>
                         </Container>
                     </Grid.Column>
                     <Grid.Column width={3} ></Grid.Column>

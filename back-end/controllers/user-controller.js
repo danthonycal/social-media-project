@@ -86,10 +86,10 @@ exports.findByUsername = (req, res) => {
   User.findOne({ "username": username }, (err, user) => {
     if (err) {
       console.log(err);
-      res.send({});
+      res.status(500).send({});
     } else {
-      console.log(user);
-      res.send(user);
+      // console.log(user);
+      res.status(200).send(user);
     }
   });
 }
@@ -99,6 +99,22 @@ exports.findByUsername = (req, res) => {
 // unfriend
 
 // edit profile
+
+exports.editProfile = (req, res) => {
+  const _id = new ObjectId(req.params._id);
+  const newUsername = req.body.params.newUsername;
+  const newName = req.body.params.newName;
+  const newBday = req.body.params.newBday;
+  const newEmail = req.body.params.newEmail;
+  console.log(req.body)
+  User.updateOne({ "_id" : _id }, {$set : { username : newUsername, name : newName, birthday : newBday, email : newEmail } }, (err) => {
+    if (err) {
+      res.send(false);
+    } else {
+      res.send(true);
+    }
+  })
+}
 
 // approve friend request
 

@@ -50,37 +50,35 @@ export default class CreatePostForm extends Component {
         this.setState({
             content: ''
         });
-        this.props.getPosts();
+        // this.props.getPosts();
+        this.render();
+        window.location.reload();
     }
     componentWillMount() {
-        const user = JSON.parse(local_storage.getItem("userData"));
+        const loggedUser = JSON.parse(local_storage.getItem("userData"));
         this.setState({
-            authorId   : user._id,
-            wallId     : user.wallId,
-            authorName : user.name,
-            wallOwner  : user.name,
+            authorId   : loggedUser._id,
+            wallId     : this.props.wallData._id,
+            authorName : loggedUser.name,
+            wallOwner  : this.props.wallData.name,
         });
     }
     render() {
         return(
-            <div>
-                <Grid centered columns={1} style={DashboardStyle}>
-                    <Card fluid>
-                        <Card.Content>
-                        <Card.Header>
-                            Make a post
-                        </Card.Header>
-                        <Card.Meta></Card.Meta>
-                        <Card.Description>
-                            <Form>
-                                <TextArea placeholder='Add a post' value = {this.state.content} onChange = {this.handleStatusChange} rows={2} style={{ minHeight: 70 }} />
-                            </Form>
-                        </Card.Description>
-                        <Button floated="right" onClick = {this.handleClick}>Post</Button>
-                        </Card.Content>
-                    </Card>
-                </Grid>
-            </div>
+            <Card style={{ marginBottom: '14' }} fluid>
+                <Card.Content>
+                <Card.Header>
+                    Make a post
+                </Card.Header>
+                <Card.Meta></Card.Meta>
+                <Card.Description>
+                    <Form>
+                        <TextArea placeholder='Add a post' value = {this.state.content} onChange = {this.handleStatusChange} rows={2} style={{ minHeight: 70 }} />
+                    </Form>
+                </Card.Description>
+                <Button floated="right" onClick = {this.handleClick}>Post</Button>
+                </Card.Content>
+            </Card>
         )
     }
 } 

@@ -22,6 +22,14 @@ class Nav extends Component {
     }
     this.handleItemClick = this.handleItemClick.bind(this);
   }
+  handleLogout = () => {
+    if(local_storage.getItem("logged") !== "true") {
+      window.location = "/";
+    } else {
+      local_storage.clear();  // clearing of localStorage
+      window.location = "/";
+    } 
+  }
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
     if (name === 'account') {
@@ -41,21 +49,25 @@ class Nav extends Component {
               <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
               Project Name
             </Menu.Item>
-            <Dropdown item simple text='Dropdown'>
-              <Dropdown.Menu >
-                <Dropdown.Item name='account' active={activeItem === 'account'} onClick={this.handleItemClick}>
-                    <Icon name='vcard' />View Profile
-                </Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
-                <Dropdown.Divider />
-              </Dropdown.Menu>
-            </Dropdown>
-            <Menu.Item as='a' header name='home' active={activeItem === 'home'} onClick={this.handleItemClick}>
-              Home
-            </Menu.Item>
-            <Menu.Item>
-              <SearchUser />
-            </Menu.Item>
+            <Menu.Menu position='right'>
+              <Menu.Item>
+                <SearchUser />
+              </Menu.Item>
+              <Menu.Item as='a' header name='home' active={activeItem === 'home'} onClick={this.handleItemClick}>
+                Home
+              </Menu.Item>
+              <Dropdown item simple text='Dropdown'>
+                <Dropdown.Menu >
+                  <Dropdown.Item name='account' active={activeItem === 'account'} onClick={this.handleItemClick}>
+                      <Icon name='vcard' />View Profile
+                  </Dropdown.Item>
+                  <Dropdown.Item>List Item</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <Menu.Item as='a' onClick={this.handleLogout}>
+                Logout
+              </Menu.Item>
+            </Menu.Menu>
           </Container>
         </Menu>
     )

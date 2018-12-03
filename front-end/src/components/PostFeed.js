@@ -4,7 +4,7 @@ import autobind from 'react-autobind';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Button,  Container,  Divider, Grid, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react';
+import { Button,  Container,  Divider, div, Header, Icon, Input, Image, Form,  Menu,  Responsive,  Segment,  Sidebar,  Visibility, Card, Feed, Sticky, Rail, TextArea, Modal, Item, List} from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import CreatePostForm from './CreatePostForm';
 import Comments from './Comments';
@@ -36,13 +36,13 @@ class Post extends Component {
     handleOpen = () => this.setState({ modalOpen: true })
     handleClose = () => this.setState({ modalOpen: false })
     handleStatusEdit = (e) => {
-        this.setState( {newContent : e.target.value} );
+        this.setState( {content : e.target.value} );
     }
     handleUpdate = (_id, e) => {
         axios.post('/app/edit-post/'+_id, {
             params: {
                 _id        : _id,
-                newContent :  this.state.newContent
+                newContent : this.state.content
             }
         })
         .then(function(response) {
@@ -51,14 +51,16 @@ class Post extends Component {
             })
         })
         this.setState({
-            newContent: ''
+            content: ''
         })
-        this.props.getPosts()
+        // this.props.getPosts();
+        this.render();
     }
     handleDeletePost = (_id, e) => {
         axios.delete('/app/delete-post/'+_id, {
             params: {
                 _id: _id,
+
             }
         }).catch((error) => {
             console.log(error);
@@ -80,37 +82,48 @@ class Post extends Component {
     }
     render() {
         return(
-            <Feed.Event>
-				<Feed.Label image={ Laura } />
-				<Feed.Content>
-					<Feed.Summary>
-						{this.state.authorName} 
-						<Feed.Date>{this.state.timestamp} | {this.state.wallOwner}'s wall</Feed.Date>
-					</Feed.Summary>
-					<Feed.Extra text>
-						{this.state.content}
-					</Feed.Extra>
-					<Feed.Meta>
-						<Button size='mini' content='Delete post' icon='trash' onClick={() => this.handleDeletePost(this.state._id)} />
-						<Modal trigger={<Button size='mini' content='Edit post' icon='edit' />} style={UpdateModalStyle} closeIcon>
-							<Header icon='edit' content='Edit Post' />
-							<Modal.Content>
-								<Form>
-									<TextArea placeholder='Update your post' value = {this.state.newContent} onChange={this.handleStatusEdit} rows={2} style={{minHeight: 70}} />
-								</Form>
-							</Modal.Content>
-							<Modal.Actions>
-                                <Button size='mini' color='red' content='Cancel' icon='remove' />
-                                <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
-							</Modal.Actions>
-						</Modal>
+            <Card fluid>
+                <Card.Content>
+                    <Card.Header>{this.state.authorName}</Card.Header>
+                    <Card.Meta>{this.state.timestamp} | {this.state.wallOwner}'s wall</Card.Meta>
+                    <Card.Description>{this.state.content}</Card.Description>
+                </Card.Content>
+                <Card.Content extra>
+                    <Modal trigger={<Button size='mini' content='Edit post' icon='edit' />} style={UpdateModalStyle} closeIcon>
+                        <Header icon='edit' content='Edit Post' />
+                        <Modal.Content>
+                            <Form>
+                                <TextArea placeholder='Update your post' value = {this.state.content} onChange={this.handleStatusEdit} rows={2} style={{minHeight: 70}} />
+                            </Form>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button size='mini' color='red' content='Cancel' icon='remove' />
+                            <Button size='mini' color='green' content='Update' icon='checkmark'  onClick = {() => this.handleUpdate(this.state._id)} />
+                        </Modal.Actions>
+                    </Modal>
+                    <Button size='mini' content='Delete post' icon='trash' onClick={() => this.handleDeletePost(this.state._id)} />
+                    <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
+                </Card.Content>
+            </Card>
+            // <Feed.Event>
+			// 	<Feed.Label image={ Laura } />
+			// 	<Feed.Content>
+			// 		<Feed.Summary>
+			// 			{this.state.authorName} 
+			// 			<Feed.Date>{this.state.timestamp} | {this.state.wallOwner}'s wall</Feed.Date>
+			// 		</Feed.Summary>
+			// 		<Feed.Extra text>
+			// 			{this.state.content}
+			// 		</Feed.Extra>
+			// 		<Feed.Meta>
+						
 
-					</Feed.Meta>
-                    <Feed.Extra>
-                        <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
-                    </Feed.Extra>
-				</Feed.Content>
-            </Feed.Event>
+			// 		</Feed.Meta>
+            //         <Feed.Extra>
+            //             <Comments getPost={this.props.getPost} comments={this.state.comments} userData={this.state} />
+            //         </Feed.Extra>
+			// 	</Feed.Content>
+            // </Feed.Event>
         )
     } 
 }
@@ -144,24 +157,20 @@ export default class PostFeed extends Component {
     }
     render() {
         const posts=this.props.posts
+        const wallData={_id: this.state.wallId, name: this.state.name}
         return(
-			<Grid>
-				<Grid.Column width={1}></Grid.Column>
-				<Grid.Column width={16}>
-					<Feed>
-						<CreatePostForm getPosts={this.props.getPosts} userData={this.state}/>
-						<br />
-						{
-							posts.reverse().map((post) => {
-								return(
-									<Post key={post._id} postData={post} getPosts={this.props.getPosts} userData={this.state}/>
-								)
-							})
-						}
-					</Feed>
-				</Grid.Column>
-				<Grid.Column width={1}></Grid.Column>
-			</Grid>
+			<div>
+				<CreatePostForm wallData={wallData} getPosts={this.props.getPosts} />
+                <Card.Group>
+                    {
+                        posts.reverse().map((post) => {
+                            return(
+                                <Post key={post._id} postData={post} getPosts={this.props.getPosts} userData={this.state}/>
+                            )
+                        })
+                    }
+                </Card.Group>
+			</div>
         )
     }
 }

@@ -61,7 +61,7 @@ export default class SearchUser extends Component {
             }
         }, 300)
     }
-    resultRenderer = ({ username }) => <Label> {username} </Label>
+    resultRenderer = ({ username }) => <a>{username}</a>
 
     render() {
         return (

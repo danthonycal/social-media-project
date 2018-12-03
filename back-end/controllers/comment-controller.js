@@ -33,13 +33,41 @@ exports.add_comment = (req, res) => {
     })
 }
 
+exports.edit_comment = (req,res) => {
+    const _id        = new ObjectId(req.params._id);
+    const newContent = req.body.params.newContent;
+    const postId     = req.body.postId;
+    console.log(postId);
+    Comment.updateOne({ "_id": _id }, { $set : { content: newContent } }, (err)=>{
+        if(err){
+            res.send(false);
+        } else {
+            Post.updateOne({ "_id": req.body.postId, "comments._id": _id }, { $set : { "comments.$.content": newContent } }, (err) => {
+                if(err) {
+                    res.send(false);
+                } else {
+                    res.send(true);
+                }
+            })
+            
+        }
+    });
+}
+
 exports.delete_comment = (req, res) => {
-    const _id = new ObjectId(req.params._id);
+    const _id    = new ObjectId(req.params._id);
+    const postId = new ObjectId(req.params.postId);
     Comment.deleteOne({ "_id": _id }, (err) => {
         if (err) {
             res.send(false);
         } else {
-            res.send(true);
+            Post.updateOne({ "_id": postId},{$pull:{comments:_id}}, (err)=>{
+                if(err){
+                    res.send(false);
+                } else {
+                    res.send(true);
+                }
+            });
         }
     });
 }

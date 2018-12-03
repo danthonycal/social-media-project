@@ -1,6 +1,7 @@
 'use strict';
-const Post   = require('mongoose').model('Post');
-const User   = require('mongoose').model('User');
+const Post    = require('mongoose').model('Post');
+const User    = require('mongoose').model('User');
+const Comment = require('mongoose').model('Comment');
 var ObjectId = require('mongodb').ObjectID;
 // add post on own wall
 exports.add_post_own_wall = (req, res) => {
@@ -35,7 +36,13 @@ exports.delete_post = (req, res) => {
         if (err) {
             res.send(false);
         } else {
-            res.send(true);
+            Comment.deleteMany({ "postId": _id }, (err)=> {
+                if(err){
+                    res.send(false);
+                } else {
+                    res.send(true);
+                }
+            });
         }
     });
 }
@@ -45,9 +52,21 @@ exports.get_all_posts = (req, res) => {
     Post.find({}, (err, posts) => {
         if (err) {
             console.log(err);
-            res.send(500);
+            res.status(500).send(err);
         } else {
-            res.send(posts);
+            res.status(200).send(posts);
+        }
+    });
+}
+
+exports.get_posts_by_id = (req, res) => {
+    const _id = new ObjectId(req.params._id)
+    Post.find({ "_id": _id }, (err, posts)=> {
+        if(err){
+            console.log(err);
+            res.status(500).send(false);
+        } else {
+            res.status(200).send(posts);
         }
     });
 }
