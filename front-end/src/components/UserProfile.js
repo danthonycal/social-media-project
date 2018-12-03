@@ -31,7 +31,19 @@ class Profile extends Component {
     handleClose = () => this.setState({ open: false })
 
     handleUsernameChange = (e) => {
-    	this.setState({ username : e.target.value })
+    	this.setState({ newUsername : e.target.value })
+    }
+
+    handleEmailChange = (e) => {
+    	this.setState({ newEmail : e.target.value })
+    }
+
+    componentWillMount(){
+        this.setState({
+            _id        : this.props.userData._id,
+            username   : this.props.userData.username,
+            email 	   : this.props.userData.email
+        });
     }
 
     componentWillMount(){
@@ -45,9 +57,9 @@ class Profile extends Component {
 
 		const inlineStyle = {
 			modal : {
-			marginTop: '0px !important',
-			marginLeft: 'auto',
-			marginRight: 'auto'
+				marginTop: '0px !important',
+				marginLeft: 'auto',
+				marginRight: 'auto'
 			}
 		};
 
@@ -57,9 +69,10 @@ class Profile extends Component {
 					<Icon name='users' circular />
 					<Header.Content>{this.state.username}</Header.Content>
 				</Header>
+				Email : {this.state.email}
 				<Modal style={inlineStyle.modal} size='mini' trigger = { <Button icon='edit' size='mini' data-tooltip="Edit username" /> }>
 					<Modal.Header>
-						Edit Username
+						Edit Username or Email
 					</Modal.Header>
 					<Modal.Content>
 						<Form>
@@ -67,6 +80,12 @@ class Profile extends Component {
 								fluid
 								value={this.state.newUsername}
 								onChange = {this.handleUsernameChange}
+							>
+							</Form.Input>
+							<Form.Input
+								fluid
+								placeholder={this.state.email}
+								onChange = {this.handleEmailChange}
 							>
 							</Form.Input>
 						</Form>
@@ -110,6 +129,23 @@ export default class UserProfile extends Component {
  		// this.handleEditProfile  =  this.handleEditProfile.bind(this)
    //   	this.getProfile = this.getProfile.bind(this)
      }
+
+	getProfile(ID) {
+		axios.get('/app/get-user-by-id/'+ID, {
+			params : {
+				_id: ID
+			}
+		})
+		.then((response) => {
+			this.setState({
+				_id : response.data._id,
+				username : response.data.username,
+				name : response.data.name,
+				email : response.data.email,
+				bday : response.data.birthday
+			})
+		});
+	}
 
 	getProfile() {
 		let user = JSON.parse(local_storage.getItem("userData"));

@@ -163,7 +163,6 @@ export default class Comments extends Component {
     componentWillMount(){
         const loggedUser = JSON.parse(local_storage.getItem("userData"));
         this.setState({
-            authorId   : loggedUser._id,
             authorName : loggedUser.name,
             postId     : this.props.userData._id,
             postOwner  : this.props.userData.name,
